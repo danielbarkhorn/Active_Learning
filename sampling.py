@@ -1,4 +1,3 @@
-from numpy import zeros, ndarray, linalg, append
 import numpy as np
 from random import random as rand
 
@@ -9,23 +8,23 @@ class Sampling:
     #  [y_n, x_n0, x_n1, ... , x_nn]]
     def __init__(self, data, data_y=None):
             if data_y:
-                self.data = zeros(data.shape[0], data.shape[1]+1)
+                self.data = np.zeros(data.shape[0], data.shape[1]+1)
                 for ind in range(self.data_y.shape[0]):
-                    self.data = append(data_y[ind], data[ind])
+                    self.data = np.append(data_y[ind], data[ind])
             self.data = data
             self.shape = data.shape
 
     def systematic(self, percent=0.25, sort='feature'):
         sample_shape = (int(self.shape[0]*percent), self.shape[1])
-        sample = zeros(sample_shape)
+        sample = np.zeros(sample_shape)
         step = int((1/percent))
         k = int(rand() * (1/percent))
 
         if sort == 'magnitude':
-            magnitudes_order = zeros(self.shape[0])
-            magnitudes_data = zeros(self.shape)
+            magnitudes_order = np.zeros(self.shape[0])
+            magnitudes_data = np.zeros(self.shape)
             for ind in range(self.shape[0]):
-                magnitudes_order[ind] = linalg.norm(self.data[ind][1:])
+                magnitudes_order[ind] = np.linalg.norm(self.data[ind][1:])
             magnitudes_order = magnitudes_order.argsort()
             magnitudes_data = self.data[magnitudes_order]
 
@@ -35,6 +34,7 @@ class Sampling:
 
             return sample
         else:
+            return
             #TODO:
             # Implement sorting by features, then choosing points with systematic apprch
             # Question, do we care about datapoints being included repeatedly?
