@@ -1,5 +1,6 @@
 from numpy import zeros, ndarray, linalg, append
-from random import random
+import numpy as np
+from random import random as rand
 
 class Sampling:
     # data as numpy ndarray with structure
@@ -18,7 +19,7 @@ class Sampling:
         sample_shape = (int(self.shape[0]*percent), self.shape[1])
         sample = zeros(sample_shape)
         step = int((1/percent))
-        k = int(random() * (1/percent))
+        k = int(rand() * (1/percent))
 
         if sort == 'magnitude':
             magnitudes_order = zeros(self.shape[0])
@@ -33,5 +34,13 @@ class Sampling:
                 k += step
 
             return sample
-
+        else:
+            #TODO:
+            # Implement sorting by features, then choosing points with systematic apprch
+            # Question, do we care about datapoints being included repeatedly?
         return
+
+    def random(self, percent=0.25):
+        sample_shape = (int(self.shape[0]*percent), self.shape[1])
+        rand_ind = np.random.randint(0, high=self.shape[0], size=sample_shape[0])
+        return self.data[rand_ind]
