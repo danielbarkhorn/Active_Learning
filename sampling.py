@@ -17,10 +17,10 @@ class Sampling:
     def systematic(self, percent=0.25, sort='feature'):
         sample_shape = (int(self.shape[0]*percent), self.shape[1])
         sample = np.zeros(sample_shape)
-        step = int((1/percent))
-        k = int(rand() * (1/percent))
 
         if sort == 'magnitude':
+            step = int((1/percent))
+            k = int(rand() * (1/percent))
             magnitudes_order = np.zeros(self.shape[0])
             magnitudes_data = np.zeros(self.shape)
             for ind in range(self.shape[0]):
@@ -34,11 +34,20 @@ class Sampling:
 
             return sample
         else:
-            return
-            #TODO:
-            # Implement sorting by features, then choosing points with systematic apprch
-            # Question, do we care about datapoints being included repeatedly?
-        return
+            window = int(sample_shape[0]/sample_shape[1])
+            step = int((self.shape[0]*percent/self.shape[1]))
+            att_order = np.zeros(self.shape[0])
+
+            for att in range(self.shape[1]):
+                k = int(rand() * window)
+                att_order = self.data[:, att].argsort()
+                att_data = self.data[att_order]
+
+                for ind in range(window):
+                    sample[ind + (att * window)] = att_data[k]
+                    k += step
+
+            return sample
 
     def random(self, percent=0.25):
         sample_shape = (int(self.shape[0]*percent), self.shape[1])
