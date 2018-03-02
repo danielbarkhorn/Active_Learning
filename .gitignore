@@ -6,4 +6,7 @@ __pycache__/
 .DS_Store
 
 # exclude data from source control by default
-/src/data/raw/SUSY.csv
+/src/data/raw/*
+!/src/data/raw/.gitkeep
+/src/data/generated/*
+!/src/data/generated/.gitkeep 
