@@ -1,3 +1,6 @@
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+
 class Active_Learner:
     def __init__(self, model, start_size=0.1,end_size=0.25,step_size=0.01):
         if type(model) == type(SVC()):
