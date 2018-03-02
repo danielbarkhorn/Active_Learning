@@ -1,7 +1,7 @@
 import numpy as np
 from random import random as rand
 
-class Sampling:
+class Sampler:
     # data as numpy ndarray with structure
     # [[y_0, x_00, x_01, ... , x_0n],
     #               ...
