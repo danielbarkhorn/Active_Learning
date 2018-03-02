@@ -6,4 +6,4 @@ __pycache__/
 .DS_Store
 
 # exclude data from source control by default
-/src/data/
+/src/data/raw/SUSY.csv

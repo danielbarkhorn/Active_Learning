@@ -4,3 +4,4 @@ dependencies:
  - sklearn
  - pandas
  - requests
+ - jupyter
