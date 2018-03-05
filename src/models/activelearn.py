@@ -1,9 +1,10 @@
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
+import numpy as np
 
 class Active_Learner:
     def __init__(self, model, start_size=0.1,end_size=0.25,step_size=0.01):
-        if type(model) == type(SVC()):
+        if type(model) == "<class 'sklearn.svm.classes.SVC'>":
             self.m = SVC(probability=True)
         else:
             self.m = model
@@ -12,7 +13,7 @@ class Active_Learner:
         self.step_size = step_size
         
     def fit(self, X, y):
-        X_train, X_unlabeled, y_train, y_unlabeled = train_test_split(X, y, train_size=0.10, random_state=42)
+        X_train, X_unlabeled, y_train, y_unlabeled = train_test_split(X, y, test_size=1-self.start_size, random_state=42)
         
         while(len(y_train) <= len(y)*self.end_size):
             self.m.fit(X_train,y_train)
