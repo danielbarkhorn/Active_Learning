@@ -26,6 +26,12 @@ class Dataset:
     def get_y(self):
         return self.data[:,0]
 
+    def test_train_split(self, train_percent=.8):
+        randomize = self.random_sample(1)
+        train = Dataset(data = randomize.data[:int(self.shape[0]*train_percent)])
+        test = Dataset(data = randomize.data[int(self.shape[0]*train_percent):])
+        return (train, test)
+
     def random_sample(self, percent=0.25):
         sample_shape = (int(self.shape[0]*percent), self.shape[1])
         rand_ind = random.sample(range(self.shape[0]), sample_shape[0])

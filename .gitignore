@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+*.py[cod]
 
 # OS generated files #
 ######################
@@ -9,4 +10,7 @@ __pycache__/
 /src/data/raw/*
 !/src/data/raw/.gitkeep
 /src/data/generated/*
-!/src/data/generated/.gitkeep 
+!/src/data/generated/.gitkeep
+
+#notebook stuff
+.ipynb_checkpoints
