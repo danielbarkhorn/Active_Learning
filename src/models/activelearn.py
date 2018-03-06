@@ -14,7 +14,7 @@ class Active_Learner:
 
         while(len(y_train) <= len(y)*self.end_size):
             self.model.fit(X_train,y_train)
-            y_unlabeled_hat = self.m.predict_proba(X_unlabeled)
+            y_unlabeled_hat = self.model.predict(X_unlabeled)
 
             #select points with low confidence (class probabilty close to 0.5)
             lowest_conf_idx = np.flip(np.argsort(abs(0.5-y_unlabeled_hat[:,0])),axis=0)
