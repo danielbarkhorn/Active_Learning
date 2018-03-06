@@ -1,11 +1,18 @@
-from data import dataset as d
-from models import model
-from models import acivelearn
-import numpy as np
+import os
+import sys
+src_path = os.getcwd().split('/')
+src_path = '/'.join(src_path[:src_path.index('src')+1])
+sys.path.append(src_path)
 
-test_data = np.random.randn(100, 5) + 1
-test_sample = s.Sampler(test_data)
+from data.dataset import Dataset
+from models.model import Model
+from models.activelearn import Active_Learner
 
-susy_data = d.Dataset()
 
-print(test_sample.systematic(sort='feature'))
+data = Dataset('SUSY_100k.csv').random_sample(.01) #1k points
+(total_train, total_test) = data.test_train_split(train_percent=.7)
+
+rand_SVM = Model('SVM')
+rand_SVM.fit(total_train.get_x(), total_train.get_y())
+
+active_SVM = Model('SVM')
