@@ -4,7 +4,7 @@ from sklearn.svm import SVC
 import pickle
 
 class Model(object):
-    def __init__(self, type, num_neighbors=0, active=False):
+    def __init__(self, type, num_neighbors=0, sample='Random'):
         if(type == 'KNN'):
             self.classifier = KNN(num_neighbors)
         else:
@@ -12,7 +12,7 @@ class Model(object):
         self.type = type
         self.trained = False
         self.trainedSize = 0
-        self.active = active
+        self.sample = sample
 
     def fit(self, X, Y):
         self.trainedSize = len(X)
@@ -26,15 +26,17 @@ class Model(object):
         else:
             return self.classifier.predict(X)
 
-    def test(self, X, Y):
+    def test(self, X, Y, fname=None):
         if not self.fit:
             return 'You have not fit the model'
-        if(self.active):
-            print("Active", self.type, "trained on", self.trainedSize, "datapoints:")
-            print (classification_report(Y,self.predict(X, proba=False)))
+
+        report = str(self.sample) + " " + str(self.type) + " trained on " + str(self.trainedSize) + " datapoints:\n"
+        report += str(classification_report(Y,self.predict(X, proba=False))) + "\n"
+        if(fname):
+            with open(fname, "a") as myfile:
+                myfile.write(report)
         else:
-            print(self.type, "trained on", self.trainedSize, "datapoints:")
-            print (classification_report(Y,self.predict(X, proba=False)))
+            print(report)
 
     def save(self, filename):
         with open(filename, 'wb') as ofile:
