@@ -1,4 +1,6 @@
 from data import dataset as d
+from models import model
+from models import acivelearn
 import numpy as np
 
 test_data = np.random.randn(100, 5) + 1
