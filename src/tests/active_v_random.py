@@ -8,12 +8,14 @@ from data.dataset import Dataset
 from models.model import Model
 from models.activelearn import Active_Learner
 
+# delete old results file
+os.remove('results.txt')
+
 # Make our data
 data = Dataset('SUSY_100k.csv').random_sample(.01) #1k points
 (total_train, total_test) = data.test_train_split(train_percent=.8)
-train160 = total_train.random_sample(.2)
-
-sys_train160 = total_train.systematic_sample(percent=0.2)
+train160 = total_train.random_sample(.05)
+sys_train160 = total_train.systematic_sample(percent=0.05)
 
 # Make our models
 rand_SVM800 = Model('SVM')
@@ -26,7 +28,7 @@ sys_SVM160 = Model('SVM', sample='Systematic')
 sys_SVM160.fit(sys_train160.get_x(), sys_train160.get_y())
 
 active_SVM = Model('SVM', sample='Active')
-AL_SVM = Active_Learner(model=active_SVM, start_size=.1, end_size=.2, step_size=.005)
+AL_SVM = Active_Learner(model=active_SVM, start_size=.01, end_size=.05, step_size=.005)
 active_SVM = AL_SVM.fit(total_train.get_x(), total_train.get_y())
 
 # Test our models
