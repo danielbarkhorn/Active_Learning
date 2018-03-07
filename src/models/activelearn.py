@@ -20,6 +20,7 @@ class Active_Learner:
             lowest_conf_idx = np.flip(np.argsort(abs(0.5-y_unlabeled_hat[:,0])),axis=0)
 
             #add points of least confidence to training set
+            #TODO static size
             X_train = np.concatenate((X_train,X_unlabeled[:int(len(y)*self.step_size)]),axis=0)
             y_train = np.concatenate((y_train,y_unlabeled[:int(len(y)*self.step_size)]),axis=0)
 
