@@ -32,4 +32,4 @@ class Active_Learner:
         return self.model
 
     def predict(self,X):
-        return self.m.predict(X)
+        return self.model.predict(X)
