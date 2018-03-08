@@ -86,7 +86,6 @@ class Dataset:
     def pca(self, n_components=5):
         pca = PCA(n_components=n_components)
         pca_data_x = pca.fit_transform(self.get_x())
-        print(self.get_y().shape, pca_data_x.shape)
-        pca_data = np.concatenate((self.get_y(), pca_data_x), axis=0)
-        print(pca_data.shape)
-        return pca_data
+        pca_data_y = np.reshape(self.get_y(), (-1,1))
+        pca_data = np.append(pca_data_y, pca_data_x, axis=1)
+        return Dataset(data=pca_data)

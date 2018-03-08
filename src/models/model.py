@@ -4,7 +4,7 @@ from sklearn.svm import SVC
 import pickle
 
 class Model(object):
-    def __init__(self, type, num_neighbors=0, sample='Random'):
+    def __init__(self, type, num_neighbors=None, sample='Random'):
         if(type == 'KNN'):
             self.classifier = KNN(num_neighbors)
         else:
