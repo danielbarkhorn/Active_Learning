@@ -9,6 +9,7 @@ class Active_Learner:
         self.end_size = end_size
         self.step_size = step_size
 
+    # could be refactored to avoid overhead w. np.concatenate
     def fit(self, X, y):
         X_train, X_unlabeled, y_train, y_unlabeled = train_test_split(X, y, test_size=1-self.start_size, random_state=42)
 

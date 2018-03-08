@@ -4,37 +4,38 @@ from sklearn.svm import SVC
 import pickle
 
 class Model(object):
-    def __init__(self, type, num_neighbors=0, active=False):
+    def __init__(self, type, num_neighbors=None, sample='Random'):
         if(type == 'KNN'):
+            assert (not num_neighbors), 'Specify a num_neighbors'
             self.classifier = KNN(num_neighbors)
         else:
             self.classifier = SVC(probability=True)
         self.type = type
         self.trained = False
         self.trainedSize = 0
-        self.active = active
+        self.sample = sample
 
     def fit(self, X, Y):
+        self.is_fit = True
         self.trainedSize = len(X)
         self.classifier.fit(X,Y)
 
     def predict(self, X, proba=True):
-        if not self.fit:
-            return 'You have not fit the model'
+        assert (self.is_fit), 'You have not fit the model'
         if(proba):
             return self.classifier.predict_proba(X)
         else:
             return self.classifier.predict(X)
 
-    def test(self, X, Y):
-        if not self.fit:
-            return 'You have not fit the model'
-        if(self.active):
-            print("Active", self.type, "trained on", self.trainedSize, "datapoints:")
-            print (classification_report(Y,self.predict(X, proba=False)))
+    def test(self, X, Y, fname=None):
+        assert (self.is_fit), 'You have not fit the model'
+        report = str(self.sample) + " " + str(self.type) + " trained on " + str(self.trainedSize) + " datapoints:\n"
+        report += str(classification_report(Y,self.predict(X, proba=False))) + "\n"
+        if(fname):
+            with open(fname, "a") as myfile:
+                myfile.write(report)
         else:
-            print(self.type, "trained on", self.trainedSize, "datapoints:")
-            print (classification_report(Y,self.predict(X, proba=False)))
+            print(report)
 
     def save(self, filename):
         with open(filename, 'wb') as ofile:
