@@ -1,9 +1,10 @@
+from sklearn.decomposition import PCA
 import numpy as np
 import random
 import os
 
 class Dataset:
-    def __init__(self, filename="SUSY_sample.csv", data=None, data_y=None):
+    def __init__(self, filename="SUSY_sample.csv", data=None, data_y=None, header=0):
         if(data_y):
             assert(data is None), 'data_y given without data_x'
             self.data = np.zeros(data.shape[0], data.shape[1]+1)
@@ -17,8 +18,11 @@ class Dataset:
             path_arr = os.getcwd().split('/')
             filepath = '..'*(len(path_arr)-1-path_arr.index('src'))
             filepath += "/data/generated/"+filename
-            self.data = np.loadtxt(filepath, delimiter=',')
+            self.data = np.loadtxt(filepath, delimiter=',', skiprows=header)
             self.shape = self.data.shape
+
+    def __getitem__(self, key):
+        return self.data[key]
 
     def get_x(self):
         return self.data[:,1:]
@@ -78,3 +82,10 @@ class Dataset:
 
     def save(self, filename):
         np.savetxt(filename, self.data, delimiter=',')
+
+    def pca(self, n_components=5):
+        pca = PCA(n_components=n_components)
+        pca_data_x = pca.fit_transform(self.get_x())
+        pca_data_y = np.reshape(self.get_y(), (-1,1))
+        pca_data = np.append(pca_data_y, pca_data_x, axis=1)
+        return Dataset(data=pca_data)
