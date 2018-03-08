@@ -16,18 +16,19 @@ class Model(object):
         self.sample = sample
 
     def fit(self, X, Y):
+        self.is_fit = True
         self.trainedSize = len(X)
         self.classifier.fit(X,Y)
 
     def predict(self, X, proba=True):
-        assert (not self.fit), 'You have not fit the model'
+        assert (self.is_fit), 'You have not fit the model'
         if(proba):
             return self.classifier.predict_proba(X)
         else:
             return self.classifier.predict(X)
 
     def test(self, X, Y, fname=None):
-        assert (not self.fit), 'You have not fit the model'
+        assert (self.is_fit), 'You have not fit the model'
         report = str(self.sample) + " " + str(self.type) + " trained on " + str(self.trainedSize) + " datapoints:\n"
         report += str(classification_report(Y,self.predict(X, proba=False))) + "\n"
         if(fname):
