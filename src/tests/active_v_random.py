@@ -9,10 +9,12 @@ from models.model import Model
 from models.activelearn import Active_Learner
 
 # delete old results file
-os.remove('results.txt')
+if os.path.isfile('results.txt'):
+    os.remove('results.txt')
 
 # Make our data
 data = Dataset('SUSY_100k.csv').random_sample(.01) #1k points
+data = data.pca(n_components=5)
 (total_train, total_test) = data.test_train_split(train_percent=.8)
 train160 = total_train.random_sample(.05)
 sys_train160 = total_train.systematic_sample(percent=0.05)
