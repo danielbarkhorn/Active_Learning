@@ -10,7 +10,7 @@ class Model(object):
             assert (num_neighbors), 'Specify a num_neighbors'
             self.classifier = KNN(num_neighbors)
         else:
-            self.classifier = SVC(probability=True)
+            self.classifier = SVC(decision_function_shape='ovr', probability=True, kernel='linear')
         self.type = type
         self.trained = False
         self.trainedSize = 0
@@ -37,6 +37,8 @@ class Model(object):
         else:
             report += ":\n"
         report += str(classification_report(Y,self.predict(X, proba=False))) + "\n"
+        print(self.predict(X, proba=False)[:25])
+        print(Y[:25])
         if(fname):
             with open(fname, "a") as myfile:
                 myfile.write(report)
