@@ -19,4 +19,4 @@ __pycache__/
 /src/tests/results.txt
 
 #pickles
-.p
+*.p
