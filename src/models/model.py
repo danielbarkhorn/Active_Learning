@@ -2,18 +2,20 @@ from sklearn.neighbors import KNeighborsClassifier as KNN
 from sklearn.metrics import classification_report
 from sklearn.svm import SVC
 import pickle
+import os
 
 class Model(object):
-    def __init__(self, type, num_neighbors=None, sample='Random'):
+    def __init__(self, type, num_neighbors=None, sample='Random', PCA=False):
         if(type == 'KNN'):
-            assert (not num_neighbors), 'Specify a num_neighbors'
+            assert (num_neighbors), 'Specify a num_neighbors'
             self.classifier = KNN(num_neighbors)
         else:
-            self.classifier = SVC(probability=True)
+            self.classifier = SVC(decision_function_shape='ovr', probability=True, kernel='linear')
         self.type = type
         self.trained = False
         self.trainedSize = 0
         self.sample = sample
+        self.PCA = PCA
 
     def fit(self, X, Y):
         self.is_fit = True
@@ -29,8 +31,14 @@ class Model(object):
 
     def test(self, X, Y, fname=None):
         assert (self.is_fit), 'You have not fit the model'
-        report = str(self.sample) + " " + str(self.type) + " trained on " + str(self.trainedSize) + " datapoints:\n"
+        report = str(self.sample) + " " + str(self.type) + " trained on " + str(self.trainedSize) + " datapoints"
+        if(self.PCA):
+            report += " (PCA):\n"
+        else:
+            report += ":\n"
         report += str(classification_report(Y,self.predict(X, proba=False))) + "\n"
+        print(self.predict(X, proba=False)[:25])
+        print(Y[:25])
         if(fname):
             with open(fname, "a") as myfile:
                 myfile.write(report)

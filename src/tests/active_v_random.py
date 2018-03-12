@@ -33,6 +33,10 @@ active_SVM = Model('SVM', sample='Active')
 AL_SVM = Active_Learner(model=active_SVM, start_size=.01, end_size=.05, step_size=.005)
 active_SVM = AL_SVM.fit(total_train.get_x(), total_train.get_y())
 
+# Delete old results
+if os.path.isfile('results.txt'):
+    os.remove('results.txt')
+
 # Test our models
 rand_SVM800.test(total_test.get_x(), total_test.get_y(), fname='results.txt')
 
