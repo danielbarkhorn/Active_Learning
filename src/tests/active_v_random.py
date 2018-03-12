@@ -8,10 +8,6 @@ from data.dataset import Dataset
 from models.model import Model
 from models.activelearn import Active_Learner
 
-# delete old results file
-if os.path.isfile('results.txt'):
-    os.remove('results.txt')
-
 # Make our data
 data = Dataset('SUSY_100k.csv').random_sample(.01) #1k points
 data = data.pca(n_components=5)
@@ -32,6 +28,10 @@ sys_SVM160.fit(sys_train160.get_x(), sys_train160.get_y())
 active_SVM = Model('SVM', sample='Active')
 AL_SVM = Active_Learner(model=active_SVM, start_size=.01, end_size=.05, step_size=.005)
 active_SVM = AL_SVM.fit(total_train.get_x(), total_train.get_y())
+
+# Delete old results
+if os.path.isfile('results.txt'):
+    os.remove('results.txt')
 
 # Test our models
 rand_SVM800.test(total_test.get_x(), total_test.get_y(), fname='results.txt')

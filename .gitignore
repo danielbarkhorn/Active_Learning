@@ -17,3 +17,6 @@ __pycache__/
 
 #results
 /src/tests/results.txt
+
+#pickles
+.p
