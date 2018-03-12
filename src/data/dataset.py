@@ -18,6 +18,7 @@ class Dataset:
             path_arr = os.getcwd().split('/')
             filepath = '../'*(len(path_arr)-1-path_arr.index('src'))
             filepath += "data/generated/"+filename
+
             self.data = np.loadtxt(filepath, delimiter=',', skiprows=header)
             self.shape = self.data.shape
 

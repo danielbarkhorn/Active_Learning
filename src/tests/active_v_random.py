@@ -8,6 +8,10 @@ from data.dataset import Dataset
 from models.model import Model
 from models.activelearn import Active_Learner
 
+# delete old results file
+if os.path.isfile('results.txt'):
+    os.remove('results.txt')
+
 # Make our data
 data = Dataset('SUSY_100k.csv').random_sample(.01) #1k points
 data = data.pca(n_components=5)
