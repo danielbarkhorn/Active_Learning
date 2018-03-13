@@ -1,5 +1,6 @@
 from sklearn.neighbors import KNeighborsClassifier as KNN
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
 from sklearn.svm import SVC
 import pickle
@@ -12,6 +13,8 @@ class Model(object):
             self.classifier = KNN(num_neighbors) #change probability, right now one probability
         elif(type == 'RF'):
             self.classifier = RandomForestClassifier()
+        elif(type == 'LR'):
+            self.classifier = LogisticRegression()
         else:
             self.classifier = SVC(decision_function_shape='ovr', probability=True, kernel='linear')
         self.type = type
@@ -45,7 +48,7 @@ class Model(object):
                 myfile.write(report)
         else:
             print(report)
-
+            
     def save(self, filename):
         with open(filename, 'wb') as ofile:
             pickle.dump(self.clf, ofile, pickle.HIGHEST_PROTOCOL)
