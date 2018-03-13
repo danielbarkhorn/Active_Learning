@@ -12,12 +12,12 @@ from models.activelearn import Active_Learner
 mnist_data = pickle.load(open( "../data/pickled/mnist_data.p", "rb" ))
 
 mnist_sample = mnist_data.random_sample(percent=.1) #4.2k instances
-(train, test) = mnist_sample.test_train_split(train_percent=.6)
-rand_train = train.random_sample(percent=.1)
+#(train, test) = mnist_sample.test_train_split(train_percent=.6)
+#rand_train = train.random_sample(percent=.1)
 
 mnist_pca = mnist_sample.pca(n_components=50)
 (train_pca, test_pca) = mnist_pca.test_train_split(train_percent=.6)
-rand_train_PCA = train_pca.random_sample(percent=.08)
+rand_train_PCA = train_pca.random_sample(size=250)
 
 # Delete old results
 if os.path.isfile('results.txt'):
