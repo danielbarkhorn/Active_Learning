@@ -1,4 +1,5 @@
 from sklearn.neighbors import KNeighborsClassifier as KNN
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 from sklearn.svm import SVC
 import pickle
@@ -9,6 +10,8 @@ class Model(object):
         if(type == 'KNN'):
             assert (num_neighbors), 'Specify a num_neighbors'
             self.classifier = KNN(num_neighbors) #change probability, right now one probability
+        elif(type == 'RF'):
+            self.classifier = RandomForestClassifier()
         else:
             self.classifier = SVC(decision_function_shape='ovr', probability=True, kernel='linear')
         self.type = type
