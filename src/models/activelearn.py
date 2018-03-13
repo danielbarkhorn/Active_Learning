@@ -15,13 +15,10 @@ class Active_Learner:
         while(len(Y_train) <= len(Y)*self.end_size):
             self.model.fit(X_train, Y_train)
             Y_unlabeled_hat = self.model.predict(X_unlabeled)
-            if(Y_unlabeled_hat.shape[1] > 2):
-                Y_unlabeled_hat = np.sort(Y_unlabeled_hat)
-                Y_unlabeled_hat = np.diff(Y_unlabeled_hat)
-                lowest_conf_idx = np.flip(np.argsort(Y_unlabeled_hat[:,-1]),axis=0)
-            else:
-                #select points with low confidence (class probabilty close to 0.5)
-                lowest_conf_idx = np.flip(np.argsort(abs(0.5-Y_unlabeled_hat[:,0])),axis=0)
+
+            low_conf = np.sort(Y_unlabeled_hat, axis=1)
+            low_conf = np.diff(low_conf, axis=1)
+            lowest_conf_idx = np.flip(np.argsort(low_conf[:,-1]),axis=0)
 
             #add points of least confidence to training set
             X_train = np.concatenate((X_train,X_unlabeled[lowest_conf_idx[:int(len(Y)*self.step_size)]]),axis=0)
