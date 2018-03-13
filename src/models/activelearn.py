@@ -17,7 +17,7 @@ class Active_Learner:
         Y_train_temp = np.sort(Y_train)
         Y_train_temp = np.sort(Y_train, axis=0)
         np.savetxt('Y_train_pre.txt', Y_train_temp)
-        while(len(Y_train) <= self.end_size):
+        while(len(Y_train) < self.end_size):
             self.model.fit(X_train, Y_train)
             Y_unlabeled_hat = self.model.predict(X_unlabeled)
             low_conf = np.sort(Y_unlabeled_hat, axis=1)
