@@ -21,12 +21,12 @@ class Active_Learner:
             lowest_conf_idx = np.flip(np.argsort(low_conf[:,-1]),axis=0)
 
             #add points of least confidence to training set
-            X_train = np.concatenate((X_train,X_unlabeled[lowest_conf_idx[:int(len(Y)*self.step_size)]]),axis=0)
-            Y_train = np.concatenate((Y_train,Y_unlabeled[lowest_conf_idx[:int(len(Y)*self.step_size)]]),axis=0)
+            X_train = np.concatenate((X_train,X_unlabeled[lowest_conf_idx[:round(len(Y)*self.step_size)]]),axis=0)
+            Y_train = np.concatenate((Y_train,Y_unlabeled[lowest_conf_idx[:round(len(Y)*self.step_size)]]),axis=0)
 
             #remove these points from "unlabeled" set
             mask = np.ones(len(Y_unlabeled), dtype=bool)
-            mask[lowest_conf_idx[0:int(len(Y)*self.step_size)]] = False
+            mask[lowest_conf_idx[0:round(len(Y)*self.step_size)]] = False
             Y_unlabeled = Y_unlabeled[mask]
             X_unlabeled = X_unlabeled[mask]
 
