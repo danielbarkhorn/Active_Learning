@@ -8,7 +8,7 @@ class Model(object):
     def __init__(self, type, num_neighbors=None, sample='Random', PCA=False):
         if(type == 'KNN'):
             assert (num_neighbors), 'Specify a num_neighbors'
-            self.classifier = KNN(num_neighbors)
+            self.classifier = KNN(num_neighbors) #change probability, right now one probability
         else:
             self.classifier = SVC(decision_function_shape='ovr', probability=True, kernel='linear')
         self.type = type
@@ -37,8 +37,6 @@ class Model(object):
         else:
             report += ":\n"
         report += str(classification_report(Y,self.predict(X, proba=False))) + "\n"
-        print(self.predict(X, proba=False)[:25])
-        print(Y[:25])
         if(fname):
             with open(fname, "a") as myfile:
                 myfile.write(report)

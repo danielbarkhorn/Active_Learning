@@ -15,9 +15,9 @@ class Active_Learner:
         while(len(Y_train) <= len(Y)*self.end_size):
             self.model.fit(X_train, Y_train)
             Y_unlabeled_hat = self.model.predict(X_unlabeled)
-
             low_conf = np.sort(Y_unlabeled_hat, axis=1)
             low_conf = np.diff(low_conf, axis=1)
+
             lowest_conf_idx = np.flip(np.argsort(low_conf[:,-1]),axis=0)
 
             #add points of least confidence to training set
@@ -30,6 +30,9 @@ class Active_Learner:
             Y_unlabeled = Y_unlabeled[mask]
             X_unlabeled = X_unlabeled[mask]
 
+        X_train = np.sort(X_train)
+        with open(fname, "X_train.txt") as myfile:
+            myfile.write(X_train)
         return self.model
 
     def predict(self,X):
