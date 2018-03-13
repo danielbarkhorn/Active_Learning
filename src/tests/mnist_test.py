@@ -28,6 +28,6 @@ rand_SVM.fit(rand_train_PCA.get_x(), rand_train_PCA.get_y())
 rand_SVM.test(test_pca.get_x(), test_pca.get_y(), fname='results.txt')
 
 active_SVM = Model('SVM', sample='Active')
-AL_SVM = Active_Learner(model=active_SVM, start_size=.04, end_size=.1, step_size=.001)
-active_SVM = AL_SVM.fit(train_PCA.get_x(), train_PCA.get_y())
+AL_SVM = Active_Learner(model=active_SVM, start_size=100, end_size=250, step_size=10)
+active_SVM = AL_SVM.fit(train_pca.get_x(), train_pca.get_y())
 active_SVM.test(test_pca.get_x(), test_pca.get_y(), fname='results.txt')

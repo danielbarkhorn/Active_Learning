@@ -16,7 +16,7 @@ __pycache__/
 .ipynb_checkpoints
 
 #results
-/src/tests/results.txt
+/src/tests/*.txt
 
 #pickles
 *.p
