@@ -21,7 +21,7 @@ mnist_pca_sample = mnist_pca.random_sample(percent=.5) #24 instances
 randSVMF1s = []
 activeSVMF1s = []
 
-for _ in range(0):
+for _ in range(3):
     #getting test data to use for both models
     (train_pca, test_pca) = mnist_pca.test_train_split(train_percent=.8)
 

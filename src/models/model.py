@@ -80,10 +80,10 @@ class Model(object):
 
         return
 
-    def test_metric(self, X_test, Y_test, f1=True):
+    def test_metric(self, X_test, Y_test, f1=True, avg='weighted'):
         if(f1):
             Y_hat = self.predict(X_test, proba=False)
-            return(f1_score(Y_test, Y_hat, average='weighted'))
+            return(f1_score(Y_test, Y_hat, average=avg))
 
 
     def save(self, filename):
