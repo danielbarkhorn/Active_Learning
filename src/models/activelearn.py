@@ -9,16 +9,27 @@ class Active_Learner:
         self.end_size = end_size
         self.step_size = step_size
 
-    def fit(self, X, Y):
-        X_train, X_unlabeled, Y_train, Y_unlabeled = train_test_split(X, Y, test_size=len(Y)-self.start_size, random_state=42)
+    def fit(self, X, Y, XTEST, YTEST):
+        X_train, X_unlabeled, Y_train, Y_unlabeled = train_test_split(X, Y, test_size=len(Y)-self.start_size)
+
+        # --------- Debugging ---------------
+        print(X_train.shape)
+        print(X_unlabeled.shape)
         X_train_temp = np.sort(X_train)
         X_train_temp = np.sort(X_train, axis=0)
         np.savetxt('X_train_pre.txt', X_train_temp)
         Y_train_temp = np.sort(Y_train)
         Y_train_temp = np.sort(Y_train, axis=0)
         np.savetxt('Y_train_pre.txt', Y_train_temp)
+        # ----------- End Debugging ----------
+
         while(len(Y_train) < self.end_size):
             self.model.fit(X_train, Y_train)
+
+            #------------- Debug --------------------
+            print(X_train.shape)
+            self.model.test(XTEST, YTEST, fname='results.txt')
+
             Y_unlabeled_hat = self.model.predict(X_unlabeled)
             low_conf = np.sort(Y_unlabeled_hat, axis=1)
             low_conf = np.diff(low_conf, axis=1)
@@ -28,6 +39,15 @@ class Active_Learner:
             #add points of least confidence to training set
             X_train = np.concatenate((X_train,X_unlabeled[lowest_conf_idx[:self.step_size]]),axis=0)
             Y_train = np.concatenate((Y_train,Y_unlabeled[lowest_conf_idx[:self.step_size]]),axis=0)
+
+
+
+            self.model.fit(X_train, Y_train)
+            self.model.test(XTEST, YTEST, fname='results.txt')
+
+            # --------------- Debug ------------------
+            print(X_train.shape)
+            print(Y_unlabeled[lowest_conf_idx[:self.step_size]])
 
             #remove these points from "unlabeled" set
             mask = np.ones(len(Y_unlabeled), dtype=bool)
