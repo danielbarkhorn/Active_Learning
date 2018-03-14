@@ -16,8 +16,7 @@ print(datetime.datetime.now())
 
 mnist_pca = pickle.load(open( "../data/pickled/mnist_data_pca50.p", "rb" ))
 
-#for sampleSize in range(100, 551, 15):
-for sampleSize in range(50, 51, 10):
+for sampleSize in range(50, 600, 10):
     startSize = int(((.5 * sampleSize) // 5) * 5)
 
     TESTDATA = []
@@ -47,7 +46,7 @@ for sampleSize in range(50, 51, 10):
     aRFRawfname = "rf_results/activeRFRaw_"+str(sampleSize)+".p"
 
     # run with this sample size this many times
-    for _ in range(1):
+    for _ in range(150):
         #getting test data to use for both models
         (train_pca, test_pca) = mnist_pca.test_train_split(train_percent=.8)
 
@@ -77,7 +76,7 @@ for sampleSize in range(50, 51, 10):
             active_RF = Model('RF', sample='Active')
             active_RF.activeLearn(train_pca.get_x(), train_pca.get_y(), start_size=startSize, end_size=sampleSize, step_size=stepSize)
             activeRFF1s[stepSize].append(active_RF.test_metric(test_pca.get_x(), test_pca.get_y(), f1=True, avg='weighted'))
-            activeRFF1s[stepSize].append((active_RF.predict(test_pca.get_x()), test_pca.get_y()))
+            activeRFRaw[stepSize].append((active_RF.predict(test_pca.get_x()), test_pca.get_y()))
 
     pickle.dump(TESTDATA, open(testfnam, "wb"))
     pickle.dump(RANDTRAIN, open(randtrainfnam, "wb"))
