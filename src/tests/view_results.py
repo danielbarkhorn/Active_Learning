@@ -1,15 +1,27 @@
 import pickle
 import numpy as np
 
-for sampleSize in range(210, 211, 1):
+for sampleSize in range(100, 101, 1):
 
-    rfname = "svm_results/randSVMF1_"+str(sampleSize)+".p"
-    afname = "svm_results/activeSVMF1_"+str(sampleSize)+".p"
+    aSVMfname = "svm_results/activeSVMF1_"+str(sampleSize)+".p"
+    rSVMfname = "svm_results/randSVMF1_"+str(sampleSize)+".p"
 
-    resultsActive = pickle.load(open( rfname, "rb" ))
-    print('Active', sampleSize)
-    print(np.min(resultsActive), np.mean(resultsActive), np.max(resultsActive), '\n')
+    aRFfname = "rf_results/activeRFF1_"+str(sampleSize)+".p"
+    rRFfname = "rf_results/randRFF1_"+str(sampleSize)+".p"
 
-    resultsRandom = pickle.load(open( afname, "rb" ))
-    print('Random', sampleSize)
-    print(np.min(resultsRandom), np.mean(resultsRandom), np.max(resultsRandom), '\n')
+    resultsSVMActive = pickle.load(open( aSVMfname, "rb" ))
+    print('Active SVM', sampleSize)
+    print(resultsSVMActive)
+    #print(np.min(resultsActive), np.mean(resultsActive), np.max(resultsActive), '\n')
+
+    resultsSVMRandom = pickle.load(open( rSVMfname, "rb" ))
+    print('Random SVM', sampleSize)
+    print(np.min(resultsSVMRandom), np.mean(resultsSVMRandom), np.max(resultsSVMRandom), '\n')
+
+    resultsRFActive = pickle.load(open( aRFfname, "rb" ))
+    print('Active RF', sampleSize)
+    print(resultsRFActive)
+
+    resultsRFRandom = pickle.load(open( rRFfname, "rb" ))
+    print('Random RF', sampleSize)
+    print(np.min(resultsRFRandom), np.mean(resultsRFRandom), np.max(resultsRFRandom), '\n')
