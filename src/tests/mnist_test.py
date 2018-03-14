@@ -28,8 +28,7 @@ rand_SVM.fit(rand_train_PCA.get_x(), rand_train_PCA.get_y())
 rand_SVM.test(test_pca.get_x(), test_pca.get_y(), fname='results.txt')
 
 active_SVM = Model('SVM', sample='Active')
-AL_SVM = Active_Learner(model=active_SVM, start_size=150, end_size=250, step_size=10)
-active_SVM = AL_SVM.fit(train_pca.get_x(), train_pca.get_y())
+active_SVM.activeLearn(train_pca.get_x(), train_pca.get_y(), start_size=150, end_size=250, step_size=10)
 active_SVM.test(test_pca.get_x(), test_pca.get_y(), fname='results.txt')
 
 rand_RF = Model('RF')
@@ -37,8 +36,7 @@ rand_RF.fit(rand_train_PCA.get_x(), rand_train_PCA.get_y())
 rand_RF.test(test_pca.get_x(), test_pca.get_y(), fname='results.txt')
 
 active_RF = Model('RF', sample='Active')
-AL_RF = Active_Learner(model=active_RF, start_size=150, end_size=250, step_size=10)
-active_RF = AL_RF.fit(train_pca.get_x(), train_pca.get_y())
+active_RF.activeLearn(train_pca.get_x(), train_pca.get_y(), start_size=150, end_size=250, step_size=10)
 active_RF.test(test_pca.get_x(), test_pca.get_y(), fname='results.txt')
 
 rand_LR = Model('LR')
@@ -46,6 +44,5 @@ rand_LR.fit(rand_train_PCA.get_x(), rand_train_PCA.get_y())
 rand_LR.test(test_pca.get_x(), test_pca.get_y(), fname='results.txt')
 
 active_LR = Model('LR', sample='Active')
-AL_LR = Active_Learner(model=active_LR, start_size=150, end_size=250, step_size=10)
-active_LR = AL_LR.fit(train_pca.get_x(), train_pca.get_y())
+active_LR.activeLearn(train_pca.get_x(), train_pca.get_y(), start_size=150, end_size=250, step_size=10)
 active_LR.test(test_pca.get_x(), test_pca.get_y(), fname='results.txt')
