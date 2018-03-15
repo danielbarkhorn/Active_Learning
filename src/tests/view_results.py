@@ -19,15 +19,15 @@ for sampleSize in range(50, 161, 10):
     print('\n', 'Random SVM', sampleSize)
     print(np.min(resultsSVMRandom), np.mean(resultsSVMRandom), np.max(resultsSVMRandom), '\n')
 
-    # resultsRFActive = pickle.load(open( aRFfname, "rb" ))
-    # print('Active RF', sampleSize)
-    # for step in resultsRFActive:
-    #     print(step)
-    #     print(np.min(resultsRFActive[step]), np.mean(resultsRFActive[step]), np.max(resultsRFActive[step]))
-    #
-    #
-    # resultsRFRandom = pickle.load(open( rRFfname, "rb" ))
-    # print('\n', 'Random RF', sampleSize)
-    # print(np.min(resultsRFRandom), np.mean(resultsRFRandom), np.max(resultsRFRandom), '\n')
+    resultsRFActive = pickle.load(open( aRFfname, "rb" ))
+    print('Active RF', sampleSize)
+    for step in resultsRFActive:
+        print(step)
+        print(np.min(resultsRFActive[step]), np.mean(resultsRFActive[step]), np.max(resultsRFActive[step]))
+
+
+    resultsRFRandom = pickle.load(open( rRFfname, "rb" ))
+    print('\n', 'Random RF', sampleSize)
+    print(np.min(resultsRFRandom), np.mean(resultsRFRandom), np.max(resultsRFRandom), '\n')
 
     print()
