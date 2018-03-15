@@ -6,6 +6,7 @@ sys.path.append(src_path)
 
 import pickle
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 import numpy as np
 
 svmActiveF1 = {}
@@ -40,5 +41,9 @@ for sampleSize in range(50, 301, 10):
 
 plt.plot(range(50, 301, 10), rand_means,linewidth=3.0,alpha=0.5)
 plt.plot(range(50, 301, 10), act_means,linewidth=3.0, c='Red',alpha=0.5)
+
+red_patch = mpatches.Patch(color='red', label='Active')
+blu_patch = mpatches.Patch(color='blue', label='Random')
+plt.legend(handles=[red_patch,blu_patch],loc=(0.75, 0.05))
 #plt.plot(range(50, 301, 10), sys_means,linewidth=3.0, c='Green',alpha=0.5)
 plt.show()
