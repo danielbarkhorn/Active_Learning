@@ -46,4 +46,7 @@ red_patch = mpatches.Patch(color='red', label='Active')
 blu_patch = mpatches.Patch(color='blue', label='Random')
 plt.legend(handles=[red_patch,blu_patch],loc=(0.75, 0.05))
 #plt.plot(range(50, 301, 10), sys_means,linewidth=3.0, c='Green',alpha=0.5)
+
+print()
+
 plt.show()
