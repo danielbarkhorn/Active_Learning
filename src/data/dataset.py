@@ -51,7 +51,9 @@ class Dataset:
         rand_dataset = Dataset(data=rand_data)
         return rand_dataset
 
-    def systematic_sample(self, percent=0.25, sort='feature'):
+    def systematic_sample(self, percent=0.25, size=0, sort='feature'):
+        if size > 0:
+            percent = size / self.shape[0]
         sample_shape = (int(self.shape[0]*percent), self.shape[1])
         sample = np.zeros(sample_shape)
 

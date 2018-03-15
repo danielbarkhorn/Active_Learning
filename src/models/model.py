@@ -1,7 +1,7 @@
 from sklearn.neighbors import KNeighborsClassifier as KNN
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, f1_score
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
 import numpy as np
@@ -79,6 +79,11 @@ class Model(object):
             X_unlabeled = X_unlabeled[mask]
 
         return
+
+    def test_metric(self, X_test, Y_test, f1=True, avg='weighted'):
+        if(f1):
+            Y_hat = self.predict(X_test, proba=False)
+            return(f1_score(Y_test, Y_hat, average=avg))
 
 
     def save(self, filename):
