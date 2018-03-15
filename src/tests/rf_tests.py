@@ -21,7 +21,7 @@ mnist_pca_sample = mnist_pca.random_sample(percent=.5) #24 instances
 randRFF1s = []
 activeRFF1s = []
 
-for _ in range(3):
+for _ in range(1000):
     #getting test data to use for both models
     (train_pca, test_pca) = mnist_pca.test_train_split(train_percent=.8)
 
