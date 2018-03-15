@@ -28,9 +28,9 @@ for sampleSize in range(50, 301, 10):
     svmRandomF1[sampleSize] = pickle.load(open(rSVMfname, "rb"))
     svmSysF1[sampleSize] = pickle.load(open(sSVMfname, "rb"))
 
-    X = [sampleSize] * 150
-    plt.scatter([x - 0.5 for x in X], svmRandomF1[sampleSize], s=5, c='Blue', alpha=0.05)
-    plt.scatter([x + 0.5 for x in X], svmActiveF1[sampleSize][10], s=5, c='Red', alpha=0.075)
+    X = [sampleSize] * 50
+    plt.scatter([x - 0.5 for x in X], svmRandomF1[sampleSize][:50], s=5, c='Blue', alpha=0.05)
+    plt.scatter([x + 0.5 for x in X], svmActiveF1[sampleSize][10][:50], s=5, c='Red', alpha=0.075)
 
     rand_means.append(np.mean(svmRandomF1[sampleSize]))
     act_means.append(np.mean(svmActiveF1[sampleSize][10]))
