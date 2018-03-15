@@ -10,20 +10,32 @@ import matplotlib.pyplot as plt
 
 svmActiveF1 = {}
 svmRandomF1 = {}
+svmSysF1 ={}
 
-for sampleSize in range(50, 171, 10):
+# Graphing
+plt.xlabel('Sample Size')
+plt.ylabel('F1 Score')
+
+for sampleSize in range(50, 201, 10):
     aSVMfname = "../tests/svm_results/activeSVMF1_"+str(sampleSize)+".p"
     rSVMfname = "../tests/svm_results/randSVMF1_"+str(sampleSize)+".p"
+    sSVMfname = "../tests/systematic/svm_results/sysSVMF1_"+str(sampleSize)+".p"
 
     svmActiveF1[sampleSize] = pickle.load(open(aSVMfname, "rb"))
     svmRandomF1[sampleSize] = pickle.load(open(rSVMfname, "rb"))
+    svmSysF1[sampleSize] = pickle.load(open(sSVMfname, "rb"))
 
-    # Graphing
     X = [sampleSize] * 150
     plt.scatter(X, svmRandomF1[sampleSize], s=5, c='Blue', alpha=0.05)
-
-    plt.scatter([x + 1 for x in X], svmActiveF1[sampleSize][5], s=5, c='Red', alpha=0.075)
+    plt.scatter([x + 1 for x in X], svmSysF1[sampleSize], s=5, c='purple', alpha=0.05)
     plt.scatter([x + 2 for x in X], svmActiveF1[sampleSize][10], s=5, c='Green', alpha=0.075)
-    plt.scatter([x + 3 for x in X], svmActiveF1[sampleSize][15], s=5, c='Orange', alpha=0.075)
+
+# for sampleSize in range(210, 370, 10):
+#     sSVMfname = "../tests/systematic/svm_results/sysSVMF1_"+str(sampleSize)+".p"
+#     svmSysF1[sampleSize] = pickle.load(open(sSVMfname, "rb"))
+#
+#     X = [sampleSize] * 150
+#
+#     plt.scatter([x + 1 for x in X], svmSysF1[sampleSize], s=5, c='purple', alpha=0.05)
 
 plt.show()
