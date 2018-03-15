@@ -32,6 +32,6 @@ for sampleSize in range(220, 301, 10):
         rand_SVM.fit(rand_train_PCA.get_x(), rand_train_PCA.get_y())
         randSVMF1s.append(rand_SVM.test_metric(test_pca.get_x(), test_pca.get_y(), f1=True, avg='weighted'))
 
-    pickle.dump(activeSVMF1s, open(rSVMF1fname, "wb" ))
+    pickle.dump(randSVMF1s, open(rSVMF1fname, "wb" ))
 
 print(datetime.datetime.now())
