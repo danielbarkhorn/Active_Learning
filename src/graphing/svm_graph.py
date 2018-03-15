@@ -21,8 +21,8 @@ plt.ylabel('F1 Score')
 
 for sampleSize in range(50, 301, 10):
     aSVMfname = "../data/ActiveLearning_data/active_svm_results/activeSVMF1_"+str(sampleSize)+".p"
-    rSVMfname = "../data/ActiveLearning_data/active_svm_results/randSVMF1_"+str(sampleSize)+".p"
-    sSVMfname = "../data/ActiveLearning_data/active_svm_results/svm_results/sysSVMF1_"+str(sampleSize)+".p"
+    rSVMfname = "../data/ActiveLearning_data/rand_svm_results/randSVMF1_"+str(sampleSize)+".p"
+    sSVMfname = "../data/ActiveLearning_data/systematic_svm_results/sysSVMF1_"+str(sampleSize)+".p"
 
     svmActiveF1[sampleSize] = pickle.load(open(aSVMfname, "rb"))
     svmRandomF1[sampleSize] = pickle.load(open(rSVMfname, "rb"))
