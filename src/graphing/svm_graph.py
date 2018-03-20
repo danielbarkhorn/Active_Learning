@@ -31,7 +31,7 @@ for sampleSize in range(50, 301, 10):
     svmSysF1[sampleSize] = pickle.load(open(sSVMfname, "rb"))
 
     X = [sampleSize] * 50
-    plt.scatter(X, svmRandomF1[sampleSize][:50], s=8, c='Blue', alpha=0.075)
+    #plt.scatter(X, svmRandomF1[sampleSize][:50], s=8, c='Blue', alpha=0.075)
     plt.scatter(X, svmActiveF1[sampleSize][10][:50], s=8, c='Red', alpha=0.075)
     #plt.scatter(X, svmSysF1[sampleSize][:50], s=8, c='Green', alpha=0.075)
 
@@ -39,14 +39,16 @@ for sampleSize in range(50, 301, 10):
     act_means.append(np.mean(svmActiveF1[sampleSize][10]))
     sys_means.append(np.mean(svmSysF1[sampleSize][10]))
 
-plt.plot(range(50, 301, 10), rand_means,linewidth=3.0,alpha=0.5)
+#plt.plot(range(50, 301, 10), rand_means,linewidth=3.0,alpha=0.5)
 plt.plot(range(50, 301, 10), act_means,linewidth=3.0, c='Red',alpha=0.5)
+
+active_dist_F1s = pickle.load(open('../tests/activeSVMDistF1s.p', "rb"))
+plt.scatter([150]*150, active_dist_F1s, s=8, c='Green', alpha=0.075)
+plt.scatter(150, np.mean(active_dist_F1s), s=18, c='Blue', alpha=1)
 
 red_patch = mpatches.Patch(color='red', label='Active')
 blu_patch = mpatches.Patch(color='blue', label='Random')
 plt.legend(handles=[red_patch,blu_patch],loc=(0.75, 0.05))
 #plt.plot(range(50, 301, 10), sys_means,linewidth=3.0, c='Green',alpha=0.5)
-
-print()
 
 plt.show()

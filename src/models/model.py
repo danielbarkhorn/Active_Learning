@@ -19,6 +19,7 @@ class Model(object):
             self.classifier = LogisticRegression()
         else:
             self.classifier = SVC(decision_function_shape='ovr', probability=True, kernel='linear')
+            type = 'SVM'
         self.type = type
         self.trained = False
         self.trainedSize = 0
@@ -51,19 +52,26 @@ class Model(object):
         else:
             print(report)
 
-    def activeLearn(self, X, Y, start_size, end_size, step_size):
+    def activeLearn(self, X, Y, start_size, end_size, step_size, SVM_D=False):
         X_train, X_unlabeled, Y_train, Y_unlabeled = train_test_split(X, Y, test_size=len(Y)-start_size)
 
         self.fit(X_train, Y_train)
 
         while(len(Y_train) < end_size):
-            Y_unlabeled_hat = self.predict(X_unlabeled)
+            if SVM_D and type=='SVM':
+                hyperplane_dists = self.classifier.decision_function(X_unlabeled)
 
-            # sort by highest probabilities, and then take difference to find pts
-            # model feels strongly are two different classes
-            low_conf = np.sort(Y_unlabeled_hat, axis=1)
-            low_conf = np.diff(low_conf, axis=1)
-            lowest_conf_idx = np.argsort(low_conf[:,-1])
+                # sort by closeness to decision boundary
+                lowest_conf_idx = np.argsort(hyperplane_dists)
+
+            else:
+                Y_unlabeled_hat = self.predict(X_unlabeled)
+
+                # sort by highest probabilities, and then take difference to find pts
+                # model feels strongly are two different classes
+                low_conf = np.sort(Y_unlabeled_hat, axis=1)
+                low_conf = np.diff(low_conf, axis=1)
+                lowest_conf_idx = np.argsort(low_conf[:,-1])
 
             #add points of least confidence to training set
             X_train = np.concatenate((X_train,X_unlabeled[lowest_conf_idx[:step_size]]),axis=0)
