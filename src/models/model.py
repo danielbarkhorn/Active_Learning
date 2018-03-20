@@ -58,11 +58,13 @@ class Model(object):
         self.fit(X_train, Y_train)
 
         while(len(Y_train) < end_size):
-            if SVM_D and type=='SVM':
+            if SVM_D and self.type=='SVM':
                 hyperplane_dists = self.classifier.decision_function(X_unlabeled)
 
-                # sort by closeness to decision boundary
-                lowest_conf_idx = np.argsort(hyperplane_dists)
+                # sort by closeness to decision boundary. some can be negative so absval
+                # https://stackoverflow.com/questions/46820154/negative-decision-function-values
+                low_conf = np.sort(np.abs(hyperplane_dists), axis=1)
+                lowest_conf_idx = np.argsort(low_conf[:,0])
 
             else:
                 Y_unlabeled_hat = self.predict(X_unlabeled)

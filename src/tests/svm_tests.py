@@ -34,11 +34,11 @@ for _ in tqdm(range(150)):
 
     #make active model
     active_SVM = Model('SVM', sample='Active')
-    active_SVM.activeLearn(train_pca.get_x(), train_pca.get_y(), start_size=50, end_size=200, step_size=10, SVM_D=True)
+    active_SVM.activeLearn(train_pca.get_x(), train_pca.get_y(), start_size=50, end_size=150, step_size=10, SVM_D=True)
     activeSVMF1s.append(active_SVM.test_metric(test_pca.get_x(), test_pca.get_y(), f1=True))
 
 #pickle.dump(randSVMF1s, open("randSVMF1s.p", "wb" ))
 
-pickle.dump(activeSVMF1s, open("activeSVMDistF1s200.p", "wb" ))
+pickle.dump(activeSVMF1s, open("activeSVMDistF1s150.p", "wb" ))
 
 print(datetime.datetime.now())

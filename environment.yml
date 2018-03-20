@@ -4,4 +4,6 @@ dependencies:
  - sklearn
  - pandas
  - requests
+ - tqdm
+ - pickle
  - jupyter
