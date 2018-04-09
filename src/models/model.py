@@ -64,8 +64,7 @@ class Model(object):
                 # sort by closeness to decision boundary. some can be negative so absval
                 # https://stackoverflow.com/questions/46820154/negative-decision-function-values
                 low_conf = np.sort(np.abs(hyperplane_dists), axis=1)
-                #print(low_conf[:5])
-                lowest_conf_idx = np.argsort(low_conf[:,-1])
+                lowest_conf_idx = np.argsort(low_conf[:,0])
 
             else:
                 Y_unlabeled_hat = self.predict(X_unlabeled)
@@ -74,7 +73,6 @@ class Model(object):
                 # model feels strongly are two different classes
                 low_conf = np.sort(Y_unlabeled_hat, axis=1)
                 low_conf = np.diff(low_conf, axis=1)
-                print(low_conf[:5])
                 lowest_conf_idx = np.argsort(low_conf[:,-1])
 
             #add points of least confidence to training set

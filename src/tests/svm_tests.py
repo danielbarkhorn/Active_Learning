@@ -22,7 +22,7 @@ mnist_pca_sample = mnist_pca.random_sample(percent=.5) #24 instances
 #randSVMF1s = []
 activeSVMF1s = []
 
-for _ in tqdm(range(50)):
+for _ in tqdm(range(150)):
     #getting test data to use for both models
     (train_pca, test_pca) = mnist_pca.test_train_split(train_percent=.8)
 
@@ -39,6 +39,6 @@ for _ in tqdm(range(50)):
 
 #pickle.dump(randSVMF1s, open("randSVMF1s.p", "wb" ))
 
-pickle.dump(activeSVMF1s, open("activeSVMDistF1s150_0.p", "wb" ))
+pickle.dump(activeSVMF1s, open("activeSVMDistF1s150.p", "wb" ))
 
 print(datetime.datetime.now())
