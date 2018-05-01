@@ -14,3 +14,5 @@ The goal of this project is to provide a framework for users to build classifier
 
 This project has been created using Python 3.6.
 The dataset we have chosen is the MNIST digit classification dataset: https://www.kaggle.com/c/digit-recognizer/data
+
+![alt text]Active_Learning/src/graphing/graph_outputs/Screenshot 2018-05-01 11.52.17.png
