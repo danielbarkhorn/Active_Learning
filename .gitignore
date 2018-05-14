@@ -15,8 +15,5 @@ __pycache__/
 #notebook stuff
 .ipynb_checkpoints
 
-#results
-/src/tests/*.txt
-
 #pickles
 *.p

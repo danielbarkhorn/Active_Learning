@@ -17,6 +17,9 @@ class Model(object):
             self.classifier = RandomForestClassifier()
         elif(type == 'LR'):
             self.classifier = LogisticRegression()
+        # TODO:
+        #   if type == 'NN'
+        # Implement NN using easiest library (tensorflow? SK Learn?)
         else:
             self.classifier = SVC(decision_function_shape='ovr', probability=True, kernel='linear')
             type = 'SVM'
@@ -30,6 +33,9 @@ class Model(object):
         self.is_fit = True
         self.trainedSize = len(Y)
         self.classifier.fit(X,Y)
+        # TODO:
+        # This becomes more complicated with NN, with number layers and size layers
+        # Could possibly do separate testing and hardcode it for MNIST
 
     def predict(self, X, proba=True):
         assert (self.is_fit), 'You have not fit the model'
@@ -52,6 +58,10 @@ class Model(object):
         else:
             print(report)
 
+    #TODO:
+    # Implement new active learning method, with 'boosting' liek choices
+    # IE include randomly chosen points, add them multiple times if the model
+    # was very confident in its classificaiton, but was wrong
     def activeLearn(self, X, Y, start_size, end_size, step_size, SVM_D=False):
         X_train, X_unlabeled, Y_train, Y_unlabeled = train_test_split(X, Y, test_size=len(Y)-start_size)
 

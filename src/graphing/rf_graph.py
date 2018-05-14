@@ -4,6 +4,9 @@ src_path = os.getcwd().split('/')
 src_path = '/'.join(src_path[:src_path.index('src')+1])
 sys.path.append(src_path)
 
+#TODO:
+# Make this a class such that we can create graphs more easily
+
 import pickle
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches

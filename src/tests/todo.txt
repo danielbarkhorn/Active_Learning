@@ -1,0 +1,9 @@
+Make a python class for testing.
+
+Init should include:
+  - Type of model
+  - Dataset
+  - Breakdown of training sizes to include
+  - Number of times to test each training size
+
+Delete old / unneeded folders and files
