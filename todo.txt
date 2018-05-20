@@ -1,3 +1,5 @@
+Replace Pickle with MsgPack (? https://www.benfrederickson.com/dont-pickle-your-data/)
+
 Make a python class for testing.
 
 Init should include:
