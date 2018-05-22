@@ -1,3 +1,5 @@
+Replace Pickle with MsgPack (? https://www.benfrederickson.com/dont-pickle-your-data/)
+
 Make a python class for testing.
 
 Init should include:
@@ -7,3 +9,7 @@ Init should include:
   - Number of times to test each training size
 
 Delete old / unneeded folders and files
+
+Implement Random Active Version:
+  X Choose points randomly
+  - Add points more times based on correctness of prediction
