@@ -25,8 +25,8 @@ class Tester(object):
         sizes : array
         array containing tuples of
             (start size,
-            end size,
             step size,
+            end size,
             random_size (optional),
             outlier_size (optional))
         to be used for testing.
@@ -38,7 +38,7 @@ class Tester(object):
         results = {}
         for size in sizes:
             size_F1s = [[] for _ in self.models]
-            for _ in range(iterations):
+            for iteration in range(iterations):
                 (train, test) = data.test_train_split(train_percent=.8)
 
                 r_size = 0 if len(size) < 4 else size[3]
@@ -46,7 +46,6 @@ class Tester(object):
 
                 # train and test models
                 for i in tqdm(range(len(self.models))):
-                    print('hellos')
                     model = self.models[i]
                     if model.sample == 'Active':
                         model.activeLearn(train.get_x(),
@@ -57,7 +56,8 @@ class Tester(object):
                                           random_size=r_size,
                                           outlier_size=o_size)
                     else:
-                        model.fit(train.get_x(), train.get_y())
+                        rand_train = train.random_sample(size=size[2])
+                        model.fit(rand_train.get_x(), rand_train.get_y())
 
                     size_F1s[i].append(model.test_metric(test.get_x(),
                                                          test.get_y(),

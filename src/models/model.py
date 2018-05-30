@@ -33,6 +33,7 @@ class Model(object):
         self.is_fit = True
         self.trainedSize = len(Y)
         self.classifier.fit(X,Y)
+        return
         # TODO:
         # This becomes more complicated with NN, with number layers and size layers
         # Could possibly do separate testing and hardcode it for MNIST
@@ -64,9 +65,7 @@ class Model(object):
     # was very confident in its classificaiton, but was wrong
     def activeLearn(self, X, Y, start_size, end_size, step_size, SVM_D=False, random_size=0, outlier_size=0):
         X_train, X_unlabeled, Y_train, Y_unlabeled = train_test_split(X, Y, test_size=len(Y)-start_size)
-
         self.fit(X_train, Y_train)
-
         while(len(Y_train) < end_size):
             if SVM_D and self.type=='SVM':
                 hyperplane_dists = self.classifier.decision_function(X_unlabeled)
@@ -86,10 +85,12 @@ class Model(object):
                 low_conf = np.diff(low_conf, axis=1)
                 lowest_conf_idx = np.argsort(low_conf[:,-1])
 
-            random_points_idx = np.random.choice(np.arange(step_size, len(lowest_conf_idx)), random_size, replace=False)
+            random_points_idx = []
+            if random_size:
+                random_points_idx = np.random.choice(np.arange(step_size, len(lowest_conf_idx)), random_size, replace=False)
 
-            random_points_x = [X_unlabeled[i] for i in random_points_idx]
-            random_points_y = [Y_unlabeled[i] for i in random_points_idx]
+                random_points_x = [X_unlabeled[i] for i in random_points_idx]
+                random_points_y = [Y_unlabeled[i] for i in random_points_idx]
 
 
             boosted_points = []
@@ -101,7 +102,11 @@ class Model(object):
             if boosted_points:
                 random_points_idx = np.concatenate((random_points_idx, boosted_points))
 
-            chosen_idx = np.concatenate((lowest_conf_idx[:(step_size - random_size)], random_points_idx, lowest_outliers[-outlier_size:]))
+            outliers = []
+            if outlier_size:
+                outliers = lowest_outliers[-outlier_size:]
+
+            chosen_idx = np.concatenate((lowest_conf_idx[:(step_size - random_size)], random_points_idx, outliers)).astype(int)
 
             #add chosen points to training set
             X_train = np.concatenate((X_train,X_unlabeled[chosen_idx]),axis=0)
