@@ -1,86 +1,26 @@
 import tensorflow as tf
 import numpy as np
+import pickle
 from tensorflow.examples.tutorials.mnist import input_data
 
+def one_hot_encode(y_original):
+    y_encoded = np.array(np.zeros((y_original.shape[0], 10)))
 
-def run_simple_graph():
-    # first, create a TensorFlow constant
-    const = tf.constant(2.0, name="const")
+    i = 0
+    for num in y_original:
+        y_encoded[i][int(num)] = 1
+        i = i + 1
 
-    # create TensorFlow variables
-    b = tf.Variable(2.0, name='b')
-    c = tf.Variable(1.0, name='c')
-
-    # now create some operations
-    d = tf.add(b, c, name='d')
-    e = tf.add(c, 2, name='e')
-    a = tf.multiply(d, e, name='a')
-
-    # setup the variable initialisation
-    init_op = tf.global_variables_initializer()
-
-    # start the session
-    with tf.Session() as sess:
-        # initialise the variables
-        sess.run(init_op)
-        # compute the output of the graph
-        a_out = sess.run(a)
-        print("Variable a is {}".format(a_out))
-
-
-def run_simple_graph_multiple():
-    # first, create a TensorFlow constant
-    const = tf.constant(2.0, name="const")
-
-    # create TensorFlow variables
-    b = tf.placeholder(tf.float32, [None, 1], name='b')
-    c = tf.Variable(1.0, name='c')
-
-    # now create some operations
-    d = tf.add(b, c, name='d')
-    e = tf.add(c, 2, name='e')
-    a = tf.multiply(d, e, name='a')
-
-    # setup the variable initialisation
-    init_op = tf.global_variables_initializer()
-
-    # start the session
-    with tf.Session() as sess:
-        # initialise the variables
-        sess.run(init_op)
-        # compute the output of the graph
-        a_out = sess.run(a, feed_dict={b: np.arange(0, 10)[:, np.newaxis]})
-        print("Variable a is {}".format(a_out))
-
-
-def simple_with_tensor_board():
-    const = tf.constant(2.0, name="const")
-
-    # Create TensorFlow variables
-    b = tf.Variable(2.0, name='b')
-    c = tf.Variable(1.0, name='c')
-
-    # now create some operations
-    d = tf.add(b, c, name='d')
-    e = tf.add(c, const, name='e')
-    a = tf.multiply(d, e, name='a')
-
-    # setup the variable initialisation
-    init_op = tf.global_variables_initializer()
-
-    # start the session
-    with tf.Session() as sess:
-        # initialise the variables
-        sess.run(init_op)
-        # compute the output of the graph
-        a_out = sess.run(a)
-        print("Variable a is {}".format(a_out))
-        train_writer = tf.summary.FileWriter('C:\\Users\\Andy\\PycharmProjects')
-        train_writer.add_graph(sess.graph)
-
+    return y_encoded
 
 def nn_example():
-    mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
+    # mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
+    my_data = pickle.load(open( "data/pickled/mnist_data.p", "rb" ))
+    mnist_x = my_data[1:200,1:]
+    mnist_y = my_data[1:200,:1]
+
+    test_mnist_x = my_data[200:800,1:]
+    test_mnist_y = my_data[200:800,:1]
 
     # Python optimisation variables
     learning_rate = 0.5
@@ -126,26 +66,42 @@ def nn_example():
     # add a summary to store the accuracy
     tf.summary.scalar('accuracy', accuracy)
 
-    merged = tf.summary.merge_all()
-    writer = tf.summary.FileWriter('C:\\Users\\Andy\\PycharmProjects')
     # start the session
-    with tf.Session() as sess:
-        # initialise the variables
-        sess.run(init_op)
-        total_batch = int(len(mnist.train.labels) / batch_size)
-        for epoch in range(epochs):
-            avg_cost = 0
-            for i in range(total_batch):
-                batch_x, batch_y = mnist.train.next_batch(batch_size=batch_size)
-                _, c = sess.run([optimiser, cross_entropy], feed_dict={x: batch_x, y: batch_y})
-                avg_cost += c / total_batch
-            print("Epoch:", (epoch + 1), "cost =", "{:.3f}".format(avg_cost))
-            summary = sess.run(merged, feed_dict={x: mnist.test.images, y: mnist.test.labels})
-            writer.add_summary(summary, epoch)
+    # with tf.Session() as sess:
+    #     # initialise the variables
+    #     sess.run(init_op)
+    #     total_batch = int(len(mnist.train.labels) / batch_size)
+    #     for epoch in range(epochs):
+    #         avg_cost = 0
+    #         for i in range(total_batch):
+    #             batch_x, batch_y = mnist.train.next_batch(batch_size=batch_size)
+    #             _, c = sess.run([optimiser, cross_entropy], feed_dict={x: batch_x, y: batch_y})
+    #             avg_cost += c / total_batch
+    #         print("Epoch:", (epoch + 1), "cost =", "{:.3f}".format(avg_cost))
+    #         summary = sess.run(merged, feed_dict={x: mnist.test.images, y: mnist.test.labels})
+    #         writer.add_summary(summary, epoch)
+    #
+    #     print("\nTraining complete!")
+    #     writer.add_graph(sess.graph)
+    #     print(sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels}))
 
-        print("\nTraining complete!")
-        writer.add_graph(sess.graph)
-        print(sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels}))
+    with tf.Session() as sess:
+        sess.run(init_op)
+
+        accuracies = []
+        for i in range(0,len(mnist_x), batch_size):
+            x_batch = mnist_x[i:i+batch_size]
+            y_batch = mnist_y[i:i+batch_size]
+
+            #Maybe change y_batch so that it is (batch_size, 10) size instead of (batch_size, 1)
+            _, c = sess.run([optimiser, cross_entropy], feed_dict={x: x_batch, y: one_hot_encode(y_batch)})
+
+            accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
+            value = accuracy.eval(feed_dict={x: test_mnist_x, y: one_hot_encode(test_mnist_y)})
+            accuracies.append(value)
+
+        # Calculate accuracy
+        print(sess.run(accuracy, feed_dict={x: mnist_x, y: one_hot_encode(mnist_y)}))
 
 if __name__ == "__main__":
     # run_simple_graph()
