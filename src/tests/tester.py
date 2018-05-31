@@ -14,6 +14,7 @@ sys.path.append(src_path)
 class Tester(object):
     def __init__(self, models):
         self.models = models
+        self.currentResults = None
 
     def runTests(self, data, sizes, iterations, graph=False):
         """
@@ -64,14 +65,24 @@ class Tester(object):
                                                          f1=True))
             results[size[2]] = size_F1s
 
+        self.currentResults = results
         return results
 
-    # def graphResults(self, results):
-    #     plt.xlabel('Sample Size')
-    #     plt.ylabel('F1 Score')
-    #     for size in results:
-    #         X = [size]*len(results[size][0])
-    #         for model in results[size]:
-    #             plt.scatter(X, model, s=8, alpha=0.075)
-    #     plt.show()
-    #     return
+    def graphResults(self):
+        results = self.currentResults
+        plt.xlabel('Sample Size')
+        plt.ylabel('F1 Score')
+        modelColors = []
+        for model in self.models:
+            modelColors.append(np.random.rand(3,))
+        for size in results:
+            X = [size]*len(results[size][0])
+            for model_ind in range(len(self.models)):
+                print(results[size][model_ind])
+                plt.scatter(X, results[size][model_ind], s=8, c=modelColors[model_ind], alpha=0.75)
+        patches = []
+        for i in range(len(self.models)):
+            patches.append(mpatches.Patch(color=modelColors[i], label=self.models[i].name))
+        plt.legend(handles=patches,loc=(0.75, 0.05))
+        plt.show()
+        return

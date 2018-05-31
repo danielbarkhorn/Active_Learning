@@ -9,7 +9,7 @@ import pickle
 import os
 
 class Model(object):
-    def __init__(self, type, num_neighbors=None, sample='Random', PCA=False):
+    def __init__(self, type, num_neighbors=None, sample='Random', PCA=False, name=None):
         if(type == 'KNN'):
             assert (num_neighbors), 'Specify a num_neighbors'
             self.classifier = KNN(num_neighbors) #change probability, right now one probability
@@ -28,6 +28,7 @@ class Model(object):
         self.trainedSize = 0
         self.sample = sample
         self.PCA = PCA
+        self.name = name
 
     def fit(self, X, Y):
         self.is_fit = True
