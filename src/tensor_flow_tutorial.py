@@ -23,11 +23,11 @@ def nn_example():
     # my_data = genfromtxt('../Active_Learning/src/data/raw/mnist.csv', delimiter=',', dtype = np.float32)
     # print("Finished reading file")
 
-    mnist_x = my_data[:100,1:]
-    mnist_y = my_data[:100,:1]
+    mnist_x = my_data[:200,1:]
+    mnist_y = my_data[:200,:1]
 
-    test_mnist_x = my_data[100:800,1:]
-    test_mnist_y = my_data[100:800,:1]
+    test_mnist_x = my_data[200:800,1:]
+    test_mnist_y = my_data[200:800,:1]
 
     # Their data
     mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
@@ -80,9 +80,14 @@ def nn_example():
         total_batch = int(len(mnist.train.labels) / batch_size)
         # for epoch in range(epochs):
 
-        for i in range(total_batch):
-            batch_x, batch_y = mnist.train.next_batch(batch_size=batch_size)
-            _, c = sess.run([optimiser, cross_entropy], feed_dict={x: batch_x, y: batch_y})
+        accuracies = []
+        for i in range(0,len(mnist_x), batch_size):
+            batch_x = mnist_x[i:i+batch_size]
+            batch_y = mnist_y[i:i+batch_size]
+
+        # for i in range(total_batch):
+        #     batch_x, batch_y = mnist.train.next_batch(batch_size=batch_size)
+            _, c = sess.run([optimiser, cross_entropy], feed_dict={x: batch_x, y: one_hot_encode(batch_y)})
 
         print("\nTraining complete!")
         print(sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels}))
