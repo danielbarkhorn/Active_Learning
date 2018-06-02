@@ -4,12 +4,13 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, f1_score
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
+import tensorflow as tf
 import numpy as np
 import pickle
 import os
 
 class Model(object):
-    def __init__(self, type, num_neighbors=None, sample='Random', PCA=False):
+    def __init__(self, type, num_neighbors=None, sample='Random', PCA=False, name=None):
         if(type == 'KNN'):
             assert (num_neighbors), 'Specify a num_neighbors'
             self.classifier = KNN(num_neighbors) #change probability, right now one probability
@@ -18,7 +19,10 @@ class Model(object):
         elif(type == 'LR'):
             self.classifier = LogisticRegression()
         elif(type == 'NN'):
+            assert (name), 'Name your net'
+            self.name = name
             self.classifier = 'NN'
+            self.init_NN()
         else:
             self.classifier = SVC(decision_function_shape='ovr', probability=True, kernel='linear')
             type = 'SVM'
@@ -27,6 +31,7 @@ class Model(object):
         self.trainedSize = 0
         self.sample = sample
         self.PCA = PCA
+        self.name = name
 
     def fit(self, X, Y):
         self.is_fit = True
@@ -36,8 +41,22 @@ class Model(object):
         self.classifier.fit(X,Y)
 
     def fit_NN(self, X, Y):
-        #TODO:
-        #Implement this ish
+        self.is_fit = True
+        with tf.Session() as sess:
+            saver.restore(sess, "NN/"+self.name+".ckpt")
+            sess.run(init_op)
+            _, c = sess.run([self.optimzer, self.cross_entropy], feed_dict={x: X, y: Y})
+            saver = tf.train.Saver()
+            saver.save(sess, "NN/"+self.name+".ckpt")
+
+    def predict_NN(self, X):
+        assert (self.is_fit), 'You have not fit the model'
+        with tf.Session() as sess:
+            saver.restore(sess, "NN/"+self.name+".ckpt")
+            sess.run(init_op)
+            _, c = sess.run([self.optimzer, self.cross_entropy], feed_dict={x: X, y: Y})
+            saver = tf.train.Saver()
+            saver.save(sess, "NN/"+self.name+".ckpt")
 
     def predict(self, X, proba=True):
         assert (self.is_fit), 'You have not fit the model'
@@ -103,6 +122,38 @@ class Model(object):
             Y_hat = self.predict(X_test, proba=False)
             return(f1_score(Y_test, Y_hat, average=avg))
 
+    def init_NN(self):
+        self.learning_rate = 0.5
+
+        self.x = tf.placeholder(tf.float32, [None, 784])
+        self.y = tf.placeholder(tf.float32, [None, 10])
+        # first layer weights and bias
+        self.W1 = tf.Variable(tf.random_normal([784, 300], stddev=0.03), name='W1')
+        self.b1 = tf.Variable(tf.random_normal([300]), name='b1')
+        # second layer weight and bias
+        self.W2 = tf.Variable(tf.random_normal([300, 10], stddev=0.03), name='W2')
+        self.b2 = tf.Variable(tf.random_normal([10]), name='b2')
+
+        self.hidden_out = tf.add(tf.matmul(self.x, self.W1), self.b1)
+        self.hidden_out = tf.nn.relu(self.hidden_out)
+
+        self.y_ = tf.nn.softmax(tf.add(tf.matmul(self.hidden_out, self.W2), self.b2))
+
+        self.y_clipped = tf.clip_by_value(self.y_, 1e-10, 0.9999999)
+        self.cross_entropy = -tf.reduce_mean(tf.reduce_sum(self.y * tf.log(self.y_clipped)
+                                                      + (1 - self.y) * tf.log(1 - self.y_clipped), axis=1))
+
+        self.optimiser = tf.train.GradientDescentOptimizer(learning_rate=self.learning_rate).minimize(self.cross_entropy)
+
+        self.init_op = tf.global_variables_initializer()
+
+        self.correct_prediction = tf.equal(tf.argmax(self.y, 1), tf.argmax(self.y_, 1))
+        self.accuracy = tf.reduce_mean(tf.cast(self.correct_prediction, tf.float32))
+
+        with tf.Session() as sess:
+            sess.run(self.init_op)
+            saver = tf.train.Saver()
+            saver.save(sess, "NN/"+self.name+".ckpt")
 
     def save(self, filename):
         with open(filename, 'wb') as ofile:
