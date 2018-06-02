@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 import pickle
 from tensorflow.examples.tutorials.mnist import input_data
+from data.dataset import Dataset
 
 def one_hot_encode(y_original):
     y_encoded = np.array(np.zeros((y_original.shape[0], 10)))
@@ -14,13 +15,22 @@ def one_hot_encode(y_original):
     return y_encoded
 
 def nn_example():
-    # mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
-    my_data = pickle.load(open( "data/pickled/mnist_data.p", "rb" ))
-    mnist_x = my_data[1:200,1:]
-    mnist_y = my_data[1:200,:1]
+    #### My own data
+    f = open("data/pickled/mnist_data.p", "rb")
+    my_data = pickle.load(f)
 
-    test_mnist_x = my_data[200:800,1:]
-    test_mnist_y = my_data[200:800,:1]
+    # from numpy import genfromtxt
+    # my_data = genfromtxt('../Active_Learning/src/data/raw/mnist.csv', delimiter=',', dtype = np.float32)
+    # print("Finished reading file")
+
+    mnist_x = my_data[:100,1:]
+    mnist_y = my_data[:100,:1]
+
+    test_mnist_x = my_data[100:800,1:]
+    test_mnist_y = my_data[100:800,:1]
+
+    # Their data
+    mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
 
     # Python optimisation variables
     learning_rate = 0.5
@@ -63,45 +73,19 @@ def nn_example():
     correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
-    # add a summary to store the accuracy
-    tf.summary.scalar('accuracy', accuracy)
-
     # start the session
-    # with tf.Session() as sess:
-    #     # initialise the variables
-    #     sess.run(init_op)
-    #     total_batch = int(len(mnist.train.labels) / batch_size)
-    #     for epoch in range(epochs):
-    #         avg_cost = 0
-    #         for i in range(total_batch):
-    #             batch_x, batch_y = mnist.train.next_batch(batch_size=batch_size)
-    #             _, c = sess.run([optimiser, cross_entropy], feed_dict={x: batch_x, y: batch_y})
-    #             avg_cost += c / total_batch
-    #         print("Epoch:", (epoch + 1), "cost =", "{:.3f}".format(avg_cost))
-    #         summary = sess.run(merged, feed_dict={x: mnist.test.images, y: mnist.test.labels})
-    #         writer.add_summary(summary, epoch)
-    #
-    #     print("\nTraining complete!")
-    #     writer.add_graph(sess.graph)
-    #     print(sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels}))
-
     with tf.Session() as sess:
+        # initialise the variables
         sess.run(init_op)
+        total_batch = int(len(mnist.train.labels) / batch_size)
+        # for epoch in range(epochs):
 
-        accuracies = []
-        for i in range(0,len(mnist_x), batch_size):
-            x_batch = mnist_x[i:i+batch_size]
-            y_batch = mnist_y[i:i+batch_size]
+        for i in range(total_batch):
+            batch_x, batch_y = mnist.train.next_batch(batch_size=batch_size)
+            _, c = sess.run([optimiser, cross_entropy], feed_dict={x: batch_x, y: batch_y})
 
-            #Maybe change y_batch so that it is (batch_size, 10) size instead of (batch_size, 1)
-            _, c = sess.run([optimiser, cross_entropy], feed_dict={x: x_batch, y: one_hot_encode(y_batch)})
-
-            accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
-            value = accuracy.eval(feed_dict={x: test_mnist_x, y: one_hot_encode(test_mnist_y)})
-            accuracies.append(value)
-
-        # Calculate accuracy
-        print(sess.run(accuracy, feed_dict={x: mnist_x, y: one_hot_encode(mnist_y)}))
+        print("\nTraining complete!")
+        print(sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels}))
 
 if __name__ == "__main__":
     # run_simple_graph()
