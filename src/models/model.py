@@ -79,11 +79,13 @@ class Model(object):
         else:
             print(report)
 
-    def activeLearn(self, X, Y, start_size, end_size, step_size, SVM_D=False):
+    #TODO:
+    # Implement new active learning method, with 'boosting' liek choices
+    # IE include randomly chosen points, add them multiple times if the model
+    # was very confident in its classificaiton, but was wrong
+    def activeLearn(self, X, Y, start_size, end_size, step_size, SVM_D=False, random_size=0, outlier_size=0):
         X_train, X_unlabeled, Y_train, Y_unlabeled = train_test_split(X, Y, test_size=len(Y)-start_size)
-
         self.fit(X_train, Y_train)
-
         while(len(Y_train) < end_size):
             if SVM_D and self.type=='SVM':
                 hyperplane_dists = self.classifier.decision_function(X_unlabeled)
@@ -99,19 +101,43 @@ class Model(object):
                 # sort by highest probabilities, and then take difference to find pts
                 # model feels strongly are two different classes
                 low_conf = np.sort(Y_unlabeled_hat, axis=1)
+                lowest_outliers = np.argsort(low_conf[:,-1])
                 low_conf = np.diff(low_conf, axis=1)
                 lowest_conf_idx = np.argsort(low_conf[:,-1])
 
-            #add points of least confidence to training set
-            X_train = np.concatenate((X_train,X_unlabeled[lowest_conf_idx[:step_size]]),axis=0)
-            Y_train = np.concatenate((Y_train,Y_unlabeled[lowest_conf_idx[:step_size]]),axis=0)
+            random_points_idx = []
+            if random_size:
+                random_points_idx = np.random.choice(np.arange(step_size, len(lowest_conf_idx)), random_size, replace=False)
+
+                random_points_x = [X_unlabeled[i] for i in random_points_idx]
+                random_points_y = [Y_unlabeled[i] for i in random_points_idx]
+
+
+            boosted_points = []
+            for ind in random_points_idx:
+                Y_hat = np.argmax(Y_unlabeled_hat[ind])
+                if Y_unlabeled[ind] != Y_hat:
+                    # we incorrectly predicted the random point
+                    boosted_points += [ind]*int(1 + Y_unlabeled_hat[ind][Y_hat]//.25)
+            if boosted_points:
+                random_points_idx = np.concatenate((random_points_idx, boosted_points))
+
+            outliers = []
+            if outlier_size:
+                outliers = lowest_outliers[-outlier_size:]
+
+            chosen_idx = np.concatenate((lowest_conf_idx[:(step_size - random_size)], random_points_idx, outliers)).astype(int)
+
+            #add chosen points to training set
+            X_train = np.concatenate((X_train,X_unlabeled[chosen_idx]),axis=0)
+            Y_train = np.concatenate((Y_train,Y_unlabeled[chosen_idx]),axis=0)
 
             # fit model with new points
             self.fit(X_train, Y_train)
 
             #remove these points from "unlabeled" set
             mask = np.ones(len(Y_unlabeled), dtype=bool)
-            mask[lowest_conf_idx[0:step_size]] = False
+            mask[chosen_idx] = False
             Y_unlabeled = Y_unlabeled[mask]
             X_unlabeled = X_unlabeled[mask]
 
