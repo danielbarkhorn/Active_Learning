@@ -23,19 +23,17 @@ def nn_example():
     # my_data = genfromtxt('../Active_Learning/src/data/raw/mnist.csv', delimiter=',', dtype = np.float32)
     # print("Finished reading file")
 
-    mnist_x = my_data[:200,1:]
-    mnist_y = my_data[:200,:1]
+    (train_mnist, test_mnist) = my_data.test_train_split(train_percent=.8)
 
-    test_mnist_x = my_data[200:800,1:]
-    test_mnist_y = my_data[200:800,:1]
+    mnist_x = train_mnist.get_x() / 256
+    mnist_y = train_mnist.get_y()
 
-    # Their data
-    mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
+    test_mnist_x = test_mnist.get_x() / 256
+    test_mnist_y = test_mnist.get_y()
 
     # Python optimisation variables
     learning_rate = 0.5
     epochs = 10
-    batch_size = 100
 
     # declare the training data placeholders
     # input x - for 28 x 28 pixels = 784
@@ -77,20 +75,23 @@ def nn_example():
     with tf.Session() as sess:
         # initialise the variables
         sess.run(init_op)
-        total_batch = int(len(mnist.train.labels) / batch_size)
+        train_size = 1000
+        batch_size = 50
+        total_batch = int(train_size / batch_size)
+        num_trained = 0
         # for epoch in range(epochs):
 
         accuracies = []
-        for i in range(0,len(mnist_x), batch_size):
+        for i in range(0, train_size, batch_size):
             batch_x = mnist_x[i:i+batch_size]
-            batch_y = mnist_y[i:i+batch_size]
+            batch_y = one_hot_encode(mnist_y[i:i+batch_size])
+            num_trained += batch_x.shape[0]
+            _, c = sess.run([optimiser, cross_entropy], feed_dict={x: batch_x, y: batch_y})
 
-        # for i in range(total_batch):
-        #     batch_x, batch_y = mnist.train.next_batch(batch_size=batch_size)
-            _, c = sess.run([optimiser, cross_entropy], feed_dict={x: batch_x, y: one_hot_encode(batch_y)})
 
         print("\nTraining complete!")
-        print(sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels}))
+        print(sess.run(accuracy, feed_dict={x: test_mnist_x, y: one_hot_encode(test_mnist_y)}))
+        print(num_trained)
 
 if __name__ == "__main__":
     # run_simple_graph()
