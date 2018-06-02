@@ -19,4 +19,3 @@ __pycache__/
 *.p
 
 # NN saved files
-/src/models/NN/*
