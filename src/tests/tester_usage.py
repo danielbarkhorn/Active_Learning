@@ -17,8 +17,13 @@ models = [Model(type='NN', sample='Active', name='Active-NN')]
 
 myTester = Tester(models)
 
-sizes = [(100, 20, 200)]
+sizes = [(1300, 20, 1500),
+         (1400, 20, 1600),
+         (1500, 20, 1700),
+         (1600, 20, 1800),
+         (1700, 20, 1900),
+         (1800, 20, 2000),
+         (1900, 20, 2100)]
 
-results = myTester.runTests(mnist_sample, sizes, iterations = 8)
-print(results)
-pickle.dump(myTester, open("tester.p", "wb" ))
+results = myTester.runTests(mnist_sample, sizes, iterations = 50)
+pickle.dump(results, open("results.p", "wb" ))

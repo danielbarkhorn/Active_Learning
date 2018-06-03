@@ -35,7 +35,7 @@ class Model(object):
 
     def fit(self, X, Y):
         self.is_fit = True
-        self.trainedSize = len(Y)
+        self.trainedSize += len(Y)
         if self.classifier == 'NN':
             self.fit_NN(X, Y)
         else:
@@ -44,11 +44,14 @@ class Model(object):
     def fit_NN(self, X, Y):
         self.is_fit = True
         X /= 256
+        batchsize = 50
         with tf.Session() as sess:
             saver = tf.train.Saver()
             saver.restore(sess, "NN/"+self.name+".ckpt")
-            sess.run(self.init_op)
-            _, c = sess.run([self.optimizer, self.cross_entropy], feed_dict={self.x: X, self.y: self.one_hot_encode(Y)})
+            for i in range(0, len(X), batchsize):
+                # self.optimizer.eval(feed_dict={self.x: X[i:i+batchsize], self.y: self.one_hot_encode(Y[i:i+batchsize])})
+                # self.cross_entropy.eval(feed_dict={self.x: X[i:i+batchsize], self.y: self.one_hot_encode(Y[i:i+batchsize])})
+                _, c = sess.run([self.optimizer, self.cross_entropy], feed_dict={self.x: X[i:i+batchsize], self.y: self.one_hot_encode(Y[i:i+batchsize])})
             saver = tf.train.Saver()
             saver.save(sess, "NN/"+self.name+".ckpt")
 
@@ -58,8 +61,7 @@ class Model(object):
         with tf.Session() as sess:
             saver = tf.train.Saver()
             saver.restore(sess, "NN/"+self.name+".ckpt")
-            sess.run(self.init_op)
-            yHat = sess.run(self.y_, feed_dict={self.x: X})
+            yHat = self.y_.eval(feed_dict={self.x: X}) #sess.run(self.y_, feed_dict={self.x: X})
             saver = tf.train.Saver()
             saver.save(sess, "NN/"+self.name+".ckpt")
         if proba:

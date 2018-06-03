@@ -18,13 +18,14 @@ test = test.random_sample(size = 500)
 
 NN = Model('NN', name='testNN')
 
-train_500 = train.random_sample(size=500)
-train_500_x = train_500.get_x() / 256
+train_500 = train.random_sample(size=1000)
+train_500_x = train_500.get_x()
 train_500_y = train_500.get_y()
+print(train_500_y)
 
 NN.fit(train_500_x, train_500_y)
 
-test_x = test.get_x() / 256
+test_x = test.get_x()
 test_y = test.get_y()
 
-print(NN.predict(test_x))
+print(NN.test_metric(test_x, test_y, f1=True))
