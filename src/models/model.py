@@ -43,6 +43,7 @@ class Model(object):
 
     def fit_NN(self, X, Y):
         self.is_fit = True
+        X /= 256
         with tf.Session() as sess:
             saver = tf.train.Saver()
             saver.restore(sess, "NN/"+self.name+".ckpt")
@@ -53,6 +54,7 @@ class Model(object):
 
     def predict_NN(self, X):
         assert (self.is_fit), 'You have not fit the model'
+        X /= 256
         with tf.Session() as sess:
             saver = tf.train.Saver()
             saver.restore(sess, "NN/"+self.name+".ckpt")

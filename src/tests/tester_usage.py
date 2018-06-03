@@ -13,7 +13,7 @@ mnist = pickle.load(open( "../data/pickled/mnist_data.p", "rb" ))
 
 mnist_sample = mnist.random_sample(percent=.5) #24 instances
 
-models = [Model('NN', sample='Active', name='Active-NN'), Model('NN', name='Random-NN')]
+models = [Model(type='NN', sample='Active', name='Active-NN'), Model(type='NN', name='Random-NN')]
 
 myTester = Tester(models)
 
