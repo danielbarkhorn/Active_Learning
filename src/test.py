@@ -21,3 +21,8 @@ train_500_x = train_500.get_x() / 256
 train_500_y = train_500.get_y()
 
 NN.fit(train_500_x, train_500_y)
+
+test_x = test.get_x() / 256
+test_y = test.get_y()
+
+NN.predict(test_x, test_y)
