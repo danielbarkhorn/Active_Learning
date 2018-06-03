@@ -52,7 +52,7 @@ class Model(object):
             saver = tf.train.Saver()
             saver.save(sess, "NN/"+self.name+".ckpt")
 
-    def predict_NN(self, X):
+    def predict_NN(self, X, proba=True):
         assert (self.is_fit), 'You have not fit the model'
         X /= 256
         with tf.Session() as sess:
@@ -62,13 +62,16 @@ class Model(object):
             yHat = sess.run(self.y_, feed_dict={self.x: X})
             saver = tf.train.Saver()
             saver.save(sess, "NN/"+self.name+".ckpt")
-        return yHat
+        if proba:
+            return yHat
+        else:
+            return np.argmax(yHat, axis=1)
 
 
     def predict(self, X, proba=True):
         assert (self.is_fit), 'You have not fit the model'
         if self.type == 'NN':
-            return self.predict_NN(X)
+            return self.predict_NN(X, proba=proba)
         else:
             if(proba):
                 return self.classifier.predict_proba(X)
