@@ -38,14 +38,16 @@ class Model(object):
         self.trainedSize = len(Y)
         if self.classifier == 'NN':
             self.fit_NN(X, Y)
-        self.classifier.fit(X,Y)
+        else:
+            self.classifier.fit(X,Y)
 
     def fit_NN(self, X, Y):
         self.is_fit = True
         with tf.Session() as sess:
+            saver = tf.train.Saver()
             saver.restore(sess, "NN/"+self.name+".ckpt")
-            sess.run(init_op)
-            _, c = sess.run([self.optimzer, self.cross_entropy], feed_dict={x: X, y: Y})
+            sess.run(self.init_op)
+            _, c = sess.run([self.optimizer, self.cross_entropy], feed_dict={self.x: X, self.y: self.one_hot_encode(Y)})
             saver = tf.train.Saver()
             saver.save(sess, "NN/"+self.name+".ckpt")
 
@@ -54,7 +56,7 @@ class Model(object):
         with tf.Session() as sess:
             saver.restore(sess, "NN/"+self.name+".ckpt")
             sess.run(init_op)
-            _, c = sess.run([self.optimzer, self.cross_entropy], feed_dict={x: X, y: Y})
+            _, c = sess.run([self.optimizer, self.cross_entropy], feed_dict={self.x: X, self.y: Y})
             saver = tf.train.Saver()
             saver.save(sess, "NN/"+self.name+".ckpt")
 
@@ -169,7 +171,7 @@ class Model(object):
         self.cross_entropy = -tf.reduce_mean(tf.reduce_sum(self.y * tf.log(self.y_clipped)
                                                       + (1 - self.y) * tf.log(1 - self.y_clipped), axis=1))
 
-        self.optimiser = tf.train.GradientDescentOptimizer(learning_rate=self.learning_rate).minimize(self.cross_entropy)
+        self.optimizer = tf.train.GradientDescentOptimizer(learning_rate=self.learning_rate).minimize(self.cross_entropy)
 
         self.init_op = tf.global_variables_initializer()
 
@@ -188,3 +190,13 @@ class Model(object):
     def load(self, filename):
         with open(filename, 'rb') as ifile:
             self.clf = pickle.load(ifile)
+
+    def one_hot_encode(self, y_original):
+        y_encoded = np.array(np.zeros((y_original.shape[0], 10)))
+
+        i = 0
+        for num in y_original:
+            y_encoded[i][int(num)] = 1
+            i = i + 1
+
+        return y_encoded
