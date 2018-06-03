@@ -1,0 +1,2 @@
+model_checkpoint_path: "Random-NN.ckpt"
+all_model_checkpoint_paths: "Random-NN.ckpt"

@@ -51,21 +51,22 @@ class Model(object):
             saver = tf.train.Saver()
             saver.save(sess, "NN/"+self.name+".ckpt")
 
-    def predict_NN(self, X, Y):
+    def predict_NN(self, X):
         assert (self.is_fit), 'You have not fit the model'
         with tf.Session() as sess:
             saver = tf.train.Saver()
             saver.restore(sess, "NN/"+self.name+".ckpt")
             sess.run(self.init_op)
-            _, c = sess.run([self.optimizer, self.cross_entropy], feed_dict={self.x: X, self.y: self.one_hot_encode(Y)})
-            print(self.y_)
+            yHat = sess.run(self.y_, feed_dict={self.x: X})
             saver = tf.train.Saver()
             saver.save(sess, "NN/"+self.name+".ckpt")
+        return yHat
 
-    def predict(self, X, Y=None, proba=True):
+
+    def predict(self, X, proba=True):
         assert (self.is_fit), 'You have not fit the model'
         if self.type == 'NN':
-            self.predict_NN(X, Y)
+            return self.predict_NN(X)
         else:
             if(proba):
                 return self.classifier.predict_proba(X)

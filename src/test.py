@@ -14,6 +14,8 @@ mnist_sample = mnist.random_sample(percent=.5) #24 instances
 
 (train, test) = mnist.test_train_split(train_percent=.8)
 
+test = test.random_sample(size = 500)
+
 NN = Model('NN', name='testNN')
 
 train_500 = train.random_sample(size=500)
@@ -25,4 +27,4 @@ NN.fit(train_500_x, train_500_y)
 test_x = test.get_x() / 256
 test_y = test.get_y()
 
-NN.predict(test_x, test_y)
+print(NN.predict(test_x))
