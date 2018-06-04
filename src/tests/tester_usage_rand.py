@@ -22,21 +22,9 @@ sizes = [(1400, 20, 1600),
          (1600, 20, 1800),
          (1700, 20, 1900),
          (1800, 20, 2000),
-         (1900, 20, 2100),
-         (2000, 20, 2200),
-         (2100, 20, 2300),
-         (2200, 20, 2400),
-         (2300, 20, 2500),
-         (2400, 20, 2600),
-         (2500, 20, 2700),
-         (2600, 20, 2800),
-         (2700, 20, 2900),
-         (2800, 20, 3000),
-         (2900, 20, 3100),
-         (3000, 20, 3200),
-         (3100, 20, 3300),
-         (3200, 20, 3400),
-         (3300, 20, 3500)]
+         (1900, 20, 2100)]
 
-results = myTester.runTests(mnist_sample, sizes, iterations = 150)
-pickle.dump(results, open('rand_16+35.py', "wb"))
+results = myTester.runTests(mnist_sample, sizes, iterations = 5)
+pickle.dump(results, open("results-rand0.p", "wb" ))
+myTester.graphResults()
+pickle.dump(myTester, open("tester16-21.p", "wb"))

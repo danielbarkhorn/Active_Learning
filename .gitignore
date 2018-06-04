@@ -17,3 +17,6 @@ __pycache__/
 
 #pickles
 *.p
+
+# NN saved files
+/src/models/NN/*
