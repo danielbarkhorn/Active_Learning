@@ -36,7 +36,7 @@ sizes = [(1400, 20, 1600),
          (3000, 20, 3200),
          (3100, 20, 3300),
          (3200, 20, 3400),
-         (3300, 20, 3500),]
+         (3300, 20, 3500)]
 
 results = myTester.runTests(mnist_sample, sizes, iterations = 50)
 pickle.dump(myTester, open("testers/tester_rand+act_16-35.p", "wb" ))

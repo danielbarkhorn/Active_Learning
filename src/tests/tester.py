@@ -42,33 +42,17 @@ class Tester(object):
         results = {}
         for size in tqdm(sizes):
             size_F1s = [[] for _ in self.models]
-<<<<<<< Updated upstream
-            for iteration in range(iterations):
-<<<<<<< HEAD
-                (train, test) = data.test_train_split(train_percent=.8)
-=======
+
             for iteration in tqdm(range(iterations)):
                 (train, test) = data.test_train_split(train_percent=.9)
->>>>>>> Stashed changes
-=======
-                (train, test) = data.test_train_split(train_percent=.9)
->>>>>>> 388bc6bf807593495399a2d31a92516238e090f9
+
 
                 r_size = 0 if len(size) < 4 else size[3]
                 o_size = 0 if len(size) < 4 else size[4]
 
                 # train and test models
-<<<<<<< Updated upstream
-                for i in tqdm(range(len(self.models))):
-<<<<<<< HEAD
-                    model = self.models[i]
-=======
                 for i in range(len(self.models)):
                     model = Model(type=self.models[i][0], sample=self.models[i][1], name=(self.models[i][2]+str(iteration)))
->>>>>>> Stashed changes
-=======
-                    model = Model(type=self.models[i][0], sample=self.models[i][1], name=(self.models[i][2]+str(iteration)))
->>>>>>> 388bc6bf807593495399a2d31a92516238e090f9
                     if model.sample == 'Active':
                         model.activeLearn(train.get_x(),
                                           train.get_y(),
@@ -81,14 +65,14 @@ class Tester(object):
                         rand_train = train.random_sample(size=size[2])
                         model.fit(rand_train.get_x(), rand_train.get_y())
 
-                    process = psutil.Process(os.getpid())
                     size_F1s[i].append(model.test_metric(test.get_x(),
                                                          test.get_y(),
                                                          f1=True))
 
-                    files = glob.glob('NN/*')
-                    for f in files:
-                        os.remove(f)
+                    if model.type == 'NN':
+                        files = glob.glob('NN/*')
+                        for f in files:
+                            os.remove(f)
             results[size[2]] = size_F1s
 
         self.currentResults = results
