@@ -35,35 +35,47 @@ class Model(object):
 
     def fit(self, X, Y):
         self.is_fit = True
-        self.trainedSize = len(Y)
+        self.trainedSize += len(Y)
         if self.classifier == 'NN':
             self.fit_NN(X, Y)
-        self.classifier.fit(X,Y)
+        else:
+            self.classifier.fit(X,Y)
 
     def fit_NN(self, X, Y):
         self.is_fit = True
-        with tf.Session() as sess:
-            saver.restore(sess, "NN/"+self.name+".ckpt")
-            sess.run(init_op)
-            _, c = sess.run([self.optimzer, self.cross_entropy], feed_dict={x: X, y: Y})
-            saver = tf.train.Saver()
-            saver.save(sess, "NN/"+self.name+".ckpt")
+        X /= 256
+        batchsize = 50
 
-    def predict_NN(self, X):
-        assert (self.is_fit), 'You have not fit the model'
         with tf.Session() as sess:
-            saver.restore(sess, "NN/"+self.name+".ckpt")
-            sess.run(init_op)
-            _, c = sess.run([self.optimzer, self.cross_entropy], feed_dict={x: X, y: Y})
-            saver = tf.train.Saver()
-            saver.save(sess, "NN/"+self.name+".ckpt")
+            self.saver.restore(sess, "NN/"+self.name+".ckpt")
+            for i in range(0, len(X), batchsize):
+                # self.optimizer.eval(feed_dict={self.x: X[i:i+batchsize], self.y: self.one_hot_encode(Y[i:i+batchsize])})
+                # self.cross_entropy.eval(feed_dict={self.x: X[i:i+batchsize], self.y: self.one_hot_encode(Y[i:i+batchsize])})
+                _, c = sess.run([self.optimizer, self.cross_entropy], feed_dict={self.x: X[i:i+batchsize], self.y: self.one_hot_encode(Y[i:i+batchsize])})
+            self.saver.save(sess, "NN/"+self.name+".ckpt")
+
+    def predict_NN(self, X, proba=True):
+        assert (self.is_fit), 'You have not fit the model'
+        X /= 256
+        with tf.Session() as sess:
+            self.saver.restore(sess, "NN/"+self.name+".ckpt")
+            yHat = self.y_.eval(feed_dict={self.x: X}) #sess.run(self.y_, feed_dict={self.x: X})
+            self.saver.save(sess, "NN/"+self.name+".ckpt")
+        if proba:
+            return yHat
+        else:
+            return np.argmax(yHat, axis=1)
+
 
     def predict(self, X, proba=True):
         assert (self.is_fit), 'You have not fit the model'
-        if(proba):
-            return self.classifier.predict_proba(X)
+        if self.type == 'NN':
+            return self.predict_NN(X, proba=proba)
         else:
-            return self.classifier.predict(X)
+            if(proba):
+                return self.classifier.predict_proba(X)
+            else:
+                return self.classifier.predict(X)
 
     def test(self, X, Y, fname=None):
         assert (self.is_fit), 'You have not fit the model'
@@ -149,6 +161,8 @@ class Model(object):
             return(f1_score(Y_test, Y_hat, average=avg))
 
     def init_NN(self):
+        tf.reset_default_graph()
+
         self.learning_rate = 0.5
 
         self.x = tf.placeholder(tf.float32, [None, 784])
@@ -169,17 +183,18 @@ class Model(object):
         self.cross_entropy = -tf.reduce_mean(tf.reduce_sum(self.y * tf.log(self.y_clipped)
                                                       + (1 - self.y) * tf.log(1 - self.y_clipped), axis=1))
 
-        self.optimiser = tf.train.GradientDescentOptimizer(learning_rate=self.learning_rate).minimize(self.cross_entropy)
+        self.optimizer = tf.train.GradientDescentOptimizer(learning_rate=self.learning_rate).minimize(self.cross_entropy)
 
         self.init_op = tf.global_variables_initializer()
 
         self.correct_prediction = tf.equal(tf.argmax(self.y, 1), tf.argmax(self.y_, 1))
         self.accuracy = tf.reduce_mean(tf.cast(self.correct_prediction, tf.float32))
 
+        self.saver = tf.train.Saver()
+
         with tf.Session() as sess:
             sess.run(self.init_op)
-            saver = tf.train.Saver()
-            saver.save(sess, "NN/"+self.name+".ckpt")
+            self.saver.save(sess, "NN/"+self.name+".ckpt")
 
     def save(self, filename):
         with open(filename, 'wb') as ofile:
@@ -188,3 +203,13 @@ class Model(object):
     def load(self, filename):
         with open(filename, 'rb') as ifile:
             self.clf = pickle.load(ifile)
+
+    def one_hot_encode(self, y_original):
+        y_encoded = np.array(np.zeros((y_original.shape[0], 10)))
+
+        i = 0
+        for num in y_original:
+            y_encoded[i][int(num)] = 1
+            i = i + 1
+
+        return y_encoded
