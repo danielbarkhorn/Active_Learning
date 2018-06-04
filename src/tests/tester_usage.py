@@ -13,17 +13,21 @@ mnist = pickle.load(open( "../data/pickled/mnist_data.p", "rb" ))
 
 mnist_sample = mnist.random_sample(percent=.5) #24 instances
 
-models = [('NN', 'Active', 'Active-NN')]
+models = [('NN', 'Active', 'Active-NN'), ('NN', 'Random', 'Random-NN')]
 
 myTester = Tester(models)
 
-sizes = [(1300, 20, 1500),
-         (1400, 20, 1600),
-         (1500, 20, 1700),
-         (1600, 20, 1800),
-         (1700, 20, 1900),
-         (1800, 20, 2000),
-         (1900, 20, 2100)]
+sizes = [(2400, 20, 2600),
+         (2500, 20, 2700),
+         (2600, 20, 2800),
+         (2700, 20, 2900),
+         (2800, 20, 3000),
+         (2900, 20, 3100),
+         (3000, 20, 3200),
+         (3100, 20, 3300),
+         (3200, 20, 3400),
+         (3300, 20, 3500),]
 
-results = myTester.runTests(mnist_sample, sizes, iterations = 5)
-pickle.dump(results, open("results.p", "wb" ))
+results = myTester.runTests(mnist_sample, sizes, iterations = 50)
+pickle.dump(myTester, open("testers/tester_rand+act_26-35.p", "wb" ))
+myTester.graphResults()

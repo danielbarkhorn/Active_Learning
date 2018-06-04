@@ -73,7 +73,6 @@ class Tester(object):
                     for f in files:
                         os.remove(f)
             results[size[2]] = size_F1s
-            print(size_F1s)
 
         self.currentResults = results
         return results
@@ -92,7 +91,7 @@ class Tester(object):
                 plt.scatter(X, results[size][model_ind], s=8, c=modelColors[model_ind], alpha=0.75)
         patches = []
         for i in range(len(self.models)):
-            patches.append(mpatches.Patch(color=modelColors[i], label=self.models[i].name))
+            patches.append(mpatches.Patch(color=modelColors[i], label=self.models[i][2]))
         plt.legend(handles=patches,loc=(0.75, 0.05))
         plt.show()
         return

@@ -17,8 +17,7 @@ models = [('NN', 'Random', 'Random-NN')]
 
 myTester = Tester(models)
 
-sizes = [(1300, 20, 1500),
-         (1400, 20, 1600),
+sizes = [(1400, 20, 1600),
          (1500, 20, 1700),
          (1600, 20, 1800),
          (1700, 20, 1900),
@@ -26,4 +25,6 @@ sizes = [(1300, 20, 1500),
          (1900, 20, 2100)]
 
 results = myTester.runTests(mnist_sample, sizes, iterations = 5)
-pickle.dump(results, open("results-rand.p", "wb" ))
+pickle.dump(results, open("results-rand0.p", "wb" ))
+myTester.graphResults()
+pickle.dump(myTester, open("tester16-21.p", "wb"))
