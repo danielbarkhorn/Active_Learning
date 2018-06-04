@@ -161,6 +161,8 @@ class Model(object):
             return(f1_score(Y_test, Y_hat, average=avg))
 
     def init_NN(self):
+        tf.reset_default_graph()
+
         self.learning_rate = 0.5
 
         self.x = tf.placeholder(tf.float32, [None, 784])
