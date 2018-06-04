@@ -1,3 +1,6 @@
+import sys
+sys.path.append("/usr/local/lib/python2.7/site-packages")
+import sklearn
 from sklearn.neighbors import KNeighborsClassifier as KNN
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression

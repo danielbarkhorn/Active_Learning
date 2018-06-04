@@ -6,6 +6,12 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import numpy as np
 from tqdm import tqdm
+<<<<<<< Updated upstream
+=======
+from models.model import Model
+import glob
+import gc
+>>>>>>> Stashed changes
 
 src_path = os.getcwd().split('/')
 src_path = '/'.join(src_path[:src_path.index('src')+1])
@@ -37,17 +43,27 @@ class Tester(object):
         """
 
         results = {}
-        for size in sizes:
+        for size in tqdm(sizes):
             size_F1s = [[] for _ in self.models]
+<<<<<<< Updated upstream
             for iteration in range(iterations):
                 (train, test) = data.test_train_split(train_percent=.8)
+=======
+            for iteration in tqdm(range(iterations)):
+                (train, test) = data.test_train_split(train_percent=.9)
+>>>>>>> Stashed changes
 
                 r_size = 0 if len(size) < 4 else size[3]
                 o_size = 0 if len(size) < 4 else size[4]
 
                 # train and test models
+<<<<<<< Updated upstream
                 for i in tqdm(range(len(self.models))):
                     model = self.models[i]
+=======
+                for i in range(len(self.models)):
+                    model = Model(type=self.models[i][0], sample=self.models[i][1], name=(self.models[i][2]+str(iteration)))
+>>>>>>> Stashed changes
                     if model.sample == 'Active':
                         model.activeLearn(train.get_x(),
                                           train.get_y(),
@@ -70,6 +86,7 @@ class Tester(object):
 
     def graphResults(self):
         results = self.currentResults
+        print(results)
         plt.xlabel('Sample Size')
         plt.ylabel('F1 Score')
         modelColors = []
@@ -78,8 +95,7 @@ class Tester(object):
         for size in results:
             X = [size]*len(results[size][0])
             for model_ind in range(len(self.models)):
-                print(results[size][model_ind])
-                plt.scatter(X, results[size][model_ind], s=8, c=modelColors[model_ind], alpha=0.75)
+                plt.scatter(X, results[size][model_ind], s=8, c=modelColors[model_ind], alpha=0.05)
         patches = []
         for i in range(len(self.models)):
             patches.append(mpatches.Patch(color=modelColors[i], label=self.models[i].name))
