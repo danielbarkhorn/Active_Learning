@@ -45,25 +45,22 @@ class Model(object):
         self.is_fit = True
         X /= 256
         batchsize = 50
+
         with tf.Session() as sess:
-            saver = tf.train.Saver()
-            saver.restore(sess, "NN/"+self.name+".ckpt")
+            self.saver.restore(sess, "NN/"+self.name+".ckpt")
             for i in range(0, len(X), batchsize):
                 # self.optimizer.eval(feed_dict={self.x: X[i:i+batchsize], self.y: self.one_hot_encode(Y[i:i+batchsize])})
                 # self.cross_entropy.eval(feed_dict={self.x: X[i:i+batchsize], self.y: self.one_hot_encode(Y[i:i+batchsize])})
                 _, c = sess.run([self.optimizer, self.cross_entropy], feed_dict={self.x: X[i:i+batchsize], self.y: self.one_hot_encode(Y[i:i+batchsize])})
-            saver = tf.train.Saver()
-            saver.save(sess, "NN/"+self.name+".ckpt")
+            self.saver.save(sess, "NN/"+self.name+".ckpt")
 
     def predict_NN(self, X, proba=True):
         assert (self.is_fit), 'You have not fit the model'
         X /= 256
         with tf.Session() as sess:
-            saver = tf.train.Saver()
-            saver.restore(sess, "NN/"+self.name+".ckpt")
+            self.saver.restore(sess, "NN/"+self.name+".ckpt")
             yHat = self.y_.eval(feed_dict={self.x: X}) #sess.run(self.y_, feed_dict={self.x: X})
-            saver = tf.train.Saver()
-            saver.save(sess, "NN/"+self.name+".ckpt")
+            self.saver.save(sess, "NN/"+self.name+".ckpt")
         if proba:
             return yHat
         else:
@@ -191,10 +188,11 @@ class Model(object):
         self.correct_prediction = tf.equal(tf.argmax(self.y, 1), tf.argmax(self.y_, 1))
         self.accuracy = tf.reduce_mean(tf.cast(self.correct_prediction, tf.float32))
 
+        self.saver = tf.train.Saver()
+
         with tf.Session() as sess:
             sess.run(self.init_op)
-            saver = tf.train.Saver()
-            saver.save(sess, "NN/"+self.name+".ckpt")
+            self.saver.save(sess, "NN/"+self.name+".ckpt")
 
     def save(self, filename):
         with open(filename, 'wb') as ofile:
