@@ -16,3 +16,5 @@ This project has been created using Python 3.6.
 The dataset we have chosen is the MNIST digit classification dataset: https://www.kaggle.com/c/digit-recognizer/data
 
 ![alt text](https://github.com/danielbarkhorn/Active_Learning/blob/master/src/graphing/graph_outputs/ActiveLearningKey.png)
+
+![alt text](https://github.com/danielbarkhorn/Active_Learning/blob/master/src/graphing/graph_outputs/NN-act-rand.png)
