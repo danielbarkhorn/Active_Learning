@@ -17,6 +17,7 @@ __pycache__/
 
 #pickles
 *.p
+!/src/tests/finalGraphTester.p
 
 # NN saved files
 /src/NN/*
