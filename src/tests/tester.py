@@ -1,6 +1,9 @@
-import datetime
 import os
 import sys
+src_path = os.getcwd().split('/')
+src_path = '/'.join(src_path[:src_path.index('src')+1])
+sys.path.append(src_path)
+import datetime
 import pickle
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
@@ -9,10 +12,6 @@ from tqdm import tqdm
 from models.model import Model
 import glob
 import gc
-
-src_path = os.getcwd().split('/')
-src_path = '/'.join(src_path[:src_path.index('src')+1])
-sys.path.append(src_path)
 
 class Tester(object):
     def __init__(self, models):
@@ -80,19 +79,22 @@ class Tester(object):
 
     def graphResults(self):
         results = self.currentResults
-        print(results)
         plt.xlabel('Sample Size')
         plt.ylabel('F1 Score')
         modelColors = []
+        means = []
         for model in self.models:
             modelColors.append(np.random.rand(3,))
+            means.append([])
         for size in results:
             X = [size]*len(results[size][0])
             for model_ind in range(len(self.models)):
                 plt.scatter(X, results[size][model_ind], s=8, c=modelColors[model_ind], alpha=0.05)
+                means[model_ind].append(np.mean(results[size][model_ind]))
         patches = []
         for i in range(len(self.models)):
-            patches.append(mpatches.Patch(color=modelColors[i], label=self.models[i][2]))
+            patches.append(mpatches.Patch(color=modelColors[i], label=self.models[i]))
+            plt.plot(range(1600, 3600, 100), means[i], linewidth=3.0, c=modelColors[i],alpha=0.5)
         plt.legend(handles=patches,loc=(0.75, 0.05))
         plt.show()
         return
