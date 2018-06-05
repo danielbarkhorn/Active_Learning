@@ -12,6 +12,16 @@ The goal of this project is to provide a framework for users to build classifier
   5. Repeat steps 2-4 until accuracy is high enough or no more effort can be applied towards hand-labelling instances.
   6. A subsample of labeled data will be held out from the above process and used for evaluating “test” accuracy.
 
+These steps have been enacted using two types of models, SVMs and Neural Nets.
+
+Support Vector Machines were used for the first iteration of this project, completed Winter 2018.
+
+Neural Networks were used for the second part of this project, completed Spring 2018.
+
+Additionally, in Spring 2018 the ability to add "boosted" actively chosen points was added. The idea behind this choice was to add randomness to our active choices, and when the randomly chosen points strongly disagreed with the current model, weigh them more highly by boosting.
+
+To get a copy of the final graph of this project for Spring 2018, run the file src/make.py
+
 This project has been created using Python 3.6.
 The dataset we have chosen is the MNIST digit classification dataset: https://www.kaggle.com/c/digit-recognizer/data
 
